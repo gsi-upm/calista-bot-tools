@@ -1,7 +1,22 @@
 #!/usr/bin/python
 
 import sys
+import argparse
+
 import re
+
+# The command line options:
+# The arguments I can take:
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--plotable", help="Print the data in a plotable format",
+                    action="store_true")
+parser.add_argument("-n", "--noerrors", help="Do not include the errors",
+                    action="store_true")
+    
+# The log input/oputput
+parser.add_argument("-l", "--logfile", type=str, help="The file with the logs",
+                    required=True)
+parser.add_argument("-o", "--outfile", help="If specified, write the result to the file",)
 
 # List of modules, by the name it can be identified in the log
 modules = ['Unitex', 'ChatScript', 'SIREN', 'JASON']
@@ -10,18 +25,19 @@ modules = ['Unitex', 'ChatScript', 'SIREN', 'JASON']
 # The line that identifies the first line of a new question-answer block
 inputLine = "Unitex input: "
 
+# The answer when the bot doesn't know how to respond.
+badResponse = "Hey, sorry. What were we talking about?"
 
-def modules_in_block(block):
+
+def modules_in_block(logtext):
     """
     Find what modules intervene in a given question-answer block
     """
-    logtext = '\n'.join(block)
     mods = []
     #Search for each module
     for mod in modules:
         if mod in logtext:
             mods.append(mod)
-    print mods
     return mods
 
 def break_logs(logdata):
@@ -46,7 +62,6 @@ def break_logs(logdata):
     logs_by_users = {}
     
     for user in users:
-        print user
         # Get the lines for this user
         user_data = [line for line in ldata if user in line]
         
@@ -69,23 +84,23 @@ def break_logs(logdata):
             first_line = block[0]
             #print "First line: " + first_line
             question = first_line[first_line.index(inputLine)+len(inputLine):]
-            bmods = modules_in_block(block)
-            logs_by_users[user].append({"question": question, "modules": bmods})
+            logtext = '\n'.join(block)
+            correct = badResponse not in logtext
+            bmods = modules_in_block(logtext)
+            logs_by_users[user].append({"question": question, "modules": bmods, "correct": correct })
     
     return logs_by_users
     
     
 
-def main(logfile, outfile):
-    logs = open(logfile).read()
+def main():
+    args = parser.parse_args()
+    print dir(args)
+    logs = open(args.logfile).read()
     
-    print break_logs(logs)
+    log_result = break_logs(logs)
+    print log_result
 
 
 if __name__ == '__main__':
-    
-    if len(sys.argv) != 3:
-        print "Usage logparser.py LOG_FILE OUT_FILE "
-        sys.exit(0)
-        
-    main(sys.argv[1], sys.argv[2])
+        main()
