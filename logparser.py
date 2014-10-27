@@ -4,6 +4,8 @@ from __future__ import print_function
 import sys
 import argparse
 
+import time
+import datetime
 import re
 
 # The command line options:
@@ -19,6 +21,12 @@ parser.add_argument("-l", "--logfile", type=str, help="The file with the logs",
                     required=True)
 parser.add_argument("-o", "--outfile", help="If specified, write the result to the file")
 
+# How shall I group the arguments for the plot?
+# Defaults to hourly
+parser.add_argument("-t", "--timegroup", type=str, default="hour",
+                    choices=["hour", "day", "week" "month"],
+                    help="The time periods to group the arguments. Defaults to hourly")
+
 # List of modules, by the name it can be identified in the log
 modules = ['Unitex', 'ChatScript', 'SIREN', 'JASON']
 
@@ -29,6 +37,8 @@ inputLine = "Unitex input: "
 # The answer when the bot doesn't know how to respond.
 badResponse = "Hey, sorry. What were we talking about?"
 
+# I'm going to use this a fair number of times, so I compile it beforehand
+time_re = re.compile("^(\w+\s\d{1,2}\s\d{1,2}:\d{2})")
 
 def modules_in_block(logtext):
     """
@@ -40,6 +50,22 @@ def modules_in_block(logtext):
         if mod in logtext:
             mods.append(mod)
     return mods
+
+def get_time(first_line):
+    """
+    Given the first line of the logs, return a datetime object
+    """
+    timestamp = time_re.search(first_line).group(1)
+  
+    # I know the date format is "Month, day, hour:minutes", so...
+    # (Probably a better idea would be adding a config or something)
+    # Also, let's cheat a little, shall we?
+    # The current log format does NOT include year, so I'll assume we
+    # are talking about the current year:
+    year = datetime.date.today().strftime("%Y")
+
+    t_strc = time.strptime(year +" " +timestamp, "%Y %b %d %H:%M")
+    return datetime.datetime.fromtimestamp(time.mktime(t_strc))
 
 def break_logs(logdata):
     """
@@ -88,7 +114,8 @@ def break_logs(logdata):
             logtext = '\n'.join(block)
             correct = badResponse not in logtext
             bmods = modules_in_block(logtext)
-            logs_by_users[user].append({"question": question, "modules": bmods, "correct": correct })
+            logs_by_users[user].append({"question": question, "modules": bmods, "correct": correct,
+                                        "time": get_time(first_line)})
     
     return logs_by_users
     
