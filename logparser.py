@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import sys
 import argparse
 
@@ -16,7 +17,7 @@ parser.add_argument("-n", "--noerrors", help="Do not include the errors",
 # The log input/oputput
 parser.add_argument("-l", "--logfile", type=str, help="The file with the logs",
                     required=True)
-parser.add_argument("-o", "--outfile", help="If specified, write the result to the file",)
+parser.add_argument("-o", "--outfile", help="If specified, write the result to the file")
 
 # List of modules, by the name it can be identified in the log
 modules = ['Unitex', 'ChatScript', 'SIREN', 'JASON']
@@ -91,15 +92,27 @@ def break_logs(logdata):
     
     return logs_by_users
     
-    
+def log_result(log_dict):
+    """
+    Converts the log to a plotable format
+    """
+    #TODO
+    return ""
 
 def main():
-    args = parser.parse_args()
-    print dir(args)
-    logs = open(args.logfile).read()
     
+    # Anything we do, first we get the arguments and parse the logfile
+    args = parser.parse_args()
+    logs = open(args.logfile).read()
     log_result = break_logs(logs)
-    print log_result
+
+    # Now, how do we want to present the results?
+    if args.plotable:
+        log_result = plotable_data(log_result)
+    
+    # File or stdout?
+    out = open(args.outfile, "w") if args.outfile else sys.stdout
+    print(log_result, file=out)
 
 
 if __name__ == '__main__':
