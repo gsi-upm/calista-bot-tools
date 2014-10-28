@@ -8,10 +8,12 @@ import time
 import datetime
 import re
 
+import csv
+
 # The command line options:
 # The arguments I can take:
 parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--plotable", help="Print the data in a plotable format",
+parser.add_argument("-p", "--plottable", help="Print the data in a csv (plottable-friendly) format",
                     action="store_true")
 parser.add_argument("-n", "--noerrors", help="Do not include the errors",
                     action="store_true")
@@ -39,6 +41,9 @@ badResponse = "Hey, sorry. What were we talking about?"
 
 # I'm going to use this a fair number of times, so I compile it beforehand
 time_re = re.compile("^(\w+\s\d{1,2}\s\d{1,2}:\d{2})")
+
+# The headers for the csv
+csv_headers = ["User", "ResponseModule", "Question", "Correct", "Timestamp"]
 
 def modules_in_block(logtext):
     """
@@ -119,12 +124,27 @@ def break_logs(logdata):
     
     return logs_by_users
     
-def log_result(log_dict):
+def plotable_data(log_dict):
     """
     Converts the log to a plotable format
     """
-    #TODO
-    return ""
+    # The header
+    csv_data = ", ".join(csv_headers)
+    
+    # Parse the data
+    for user, value in log_dict.iteritems():
+        for row in value:
+            # As usual, quite dirty. If "SIREN" is in the modules, the response
+            # was provided by siren, else, we asume is ChatScript
+            responser = "SIREN" if "SIREN" in row['modules'] else "ChatScript"
+            
+            # TODO: Should I check for commas in the data?
+            # Place the linebreak only if necesary.
+            csv_data += "\r\n{user}, {module}, {question}, {correct}, {timestamp}".format(
+                user=user, module=responser, question=row["question"],
+                correct=row['correct'], timestamp=row["time"].isoformat())
+    
+    return csv_data
 
 def main():
     
@@ -134,7 +154,7 @@ def main():
     log_result = break_logs(logs)
 
     # Now, how do we want to present the results?
-    if args.plotable:
+    if args.plottable:
         log_result = plotable_data(log_result)
     
     # File or stdout?

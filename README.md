@@ -8,9 +8,11 @@ Small phython utility to parse the logs from the [Calista Bot](https://github.co
 
 Usage
 ---------------------------------------
-For the moment, it has no functionality whatsoever, but it can be run to get a in-screen breakdown:
+To run it, you need to tell it with -l o --logfile the file with the logs.
+    logparser.py -l LOG_FILE
 
-    logparser.py LOG_FILE OUT_FILE
+For full details on the (limited) options, run with --help
+    logparser.py --help
 
 How it works
 ---------------------------------------
