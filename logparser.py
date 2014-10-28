@@ -9,6 +9,7 @@ import datetime
 import re
 
 import csv
+import json
 
 # The command line options:
 # The arguments I can take:
@@ -29,8 +30,8 @@ parser.add_argument("-t", "--timegroup", type=str, default="hour",
                     choices=["hour", "day", "week" "month"],
                     help="The time periods to group the arguments. Defaults to hourly")
 
-# List of modules, by the name it can be identified in the log
-modules = ['Unitex', 'ChatScript', 'SIREN', 'JASON']
+# Modules, by the name it can be identified in the log
+modules = {'unitex': 'Unitex', 'cs':'ChatScript', 'siren':'SIRENSLog', 'jason': 'JASONLog'}
 
 # Input "flag"
 # The line that identifies the first line of a new question-answer block
@@ -45,16 +46,13 @@ time_re = re.compile("^(\w+\s\d{1,2}\s\d{1,2}:\d{2})")
 # The headers for the csv
 csv_headers = ["User", "ResponseModule", "Question", "Correct", "Timestamp"]
 
-def modules_in_block(logtext):
+def response_module(logtext):
     """
     Find what modules intervene in a given question-answer block
     """
-    mods = []
-    #Search for each module
-    for mod in modules:
-        if mod in logtext:
-            mods.append(mod)
-    return mods
+    if modules['siren'] in logtext:
+        return "SIREN"
+    return "ChatScript"
 
 def get_time(first_line):
     """
@@ -118,9 +116,9 @@ def break_logs(logdata):
             question = first_line[first_line.index(inputLine)+len(inputLine):]
             logtext = '\n'.join(block)
             correct = badResponse not in logtext
-            bmods = modules_in_block(logtext)
-            logs_by_users[user].append({"question": question, "modules": bmods, "correct": correct,
-                                        "time": get_time(first_line)})
+            rmod = response_module(logtext)
+            logs_by_users[user].append({"question": question, "module": rmod, "correct": correct,
+                                        "time": get_time(first_line).isoformat()})
     
     return logs_by_users
     
@@ -134,15 +132,11 @@ def plotable_data(log_dict):
     # Parse the data
     for user, value in log_dict.iteritems():
         for row in value:
-            # As usual, quite dirty. If "SIREN" is in the modules, the response
-            # was provided by siren, else, we asume is ChatScript
-            responser = "SIREN" if "SIREN" in row['modules'] else "ChatScript"
-            
             # TODO: Should I check for commas in the data?
             # Place the linebreak only if necesary.
             csv_data += "\r\n{user}, {module}, {question}, {correct}, {timestamp}".format(
-                user=user, module=responser, question=row["question"],
-                correct=row['correct'], timestamp=row["time"].isoformat())
+                user=user, module=row['module'], question=row["question"],
+                correct=row['correct'], timestamp=row["time"])
     
     return csv_data
 
@@ -151,15 +145,14 @@ def main():
     # Anything we do, first we get the arguments and parse the logfile
     args = parser.parse_args()
     logs = open(args.logfile).read()
-    log_result = break_logs(logs)
+    l_data = break_logs(logs)
 
     # Now, how do we want to present the results?
-    if args.plottable:
-        log_result = plotable_data(log_result)
+    log = plotable_data(l_data) if args.plottable else json.dumps(l_data, indent=4)
     
     # File or stdout?
     out = open(args.outfile, "w") if args.outfile else sys.stdout
-    print(log_result, file=out)
+    print(log, file=out)
 
 
 if __name__ == '__main__':
