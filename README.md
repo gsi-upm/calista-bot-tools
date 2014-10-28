@@ -22,8 +22,8 @@ How it works
 Given a log file, it will break the log by pieces of conversation (question - answer), and
 sort it by user, given the data break down per user.
 
-For each response, it will provide a timestamp, que question and answer, and a list of the modules that
-contributed to said answer.
+For each response, it will provide a timestamp, que question, whether the answer was correct or not,
+and a the modules that provided said answer.
 
 License
 ---------------------------------------
