@@ -117,7 +117,7 @@ def break_logs(logdata):
             logtext = '\n'.join(block)
             correct = badResponse not in logtext
             rmod = response_module(logtext)
-            logs_by_users[user].append({"question": question, "module": rmod, "correct": correct,
+            logs_by_users[user].append({"question": '"' + question + '"', "module": rmod, "correct": correct,
                                         "time": get_time(first_line).isoformat()})
     
     return logs_by_users
