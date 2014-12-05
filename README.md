@@ -9,8 +9,8 @@ Small phython utility to test the [Calista Bot](https://github.com/gsi-upm/calis
 Usage
 ---------------------------------------
 
-How it works
----------------------------------------
+For the moment, there is only a small test for the FrontEnd controller, which can take the URL
+for the controller as a parameter, defaulting to loclahost:8090
 
 License
 ---------------------------------------
