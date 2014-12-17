@@ -6,7 +6,7 @@ This is a small set of tasks to test the calista bot at http://demos.gsi.dit.upm
 
 You need to have pybossa-pbs already configured. For more info on this, check the [pbs documentation](http://docs.pybossa.com/en/latest/user/pbs.html).
 
-Edit the prject.json file and add the relevant data.
+Edit the project.json file and add the relevant data.
 ```json
 {
     "name": "Calista-Bot-tester",
@@ -32,6 +32,10 @@ This will generate generic-questions tasks, that you can add to the project, alo
 ```
 
 You will now be able to see the project in the pybossa interface, and start working on the tasks.
+
+## Acknowledgments
+
+This module is based on the [Flickrperson module](https://github.com/PyBossa/app-flickrperson) from Pybossa, following their doc on how to [create pybossa tasks](http://docs.pybossa.com/en/latest/user/tutorial.html).
 
 
 ## License
