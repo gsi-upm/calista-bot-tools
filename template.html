@@ -110,6 +110,20 @@ var messages = {"en": {
 
 });
 
+$("#qform").submit(function(event) {
+
+    // The question
+    var q = $("input:q").val();
+    var dialog = sendQuestion(q);
+    
+    // Set the question.
+    $('#question').html(dialog.q);
+    $('#botanswer').html(dialog.response);
+    $('questioncontainer').style.display = "";
+    $('questionform').style.display = "none";
+    
+});
+
 function i18n_translate() {
     var ids = Object.keys(messages[userLocale])
     for (i=0; i<ids.length; i++) {
@@ -134,7 +148,7 @@ function sendQuestion(question) {
     
     $.get(req_uri, function(bot_response) {
         if (bot_response.dialog.response) {
-            return bot_response.dialog.response;
+            return bot_response.dialog;
         }
     });
     return "Error performing the request";
@@ -170,7 +184,9 @@ pybossa.presentTask(function(task, deferred) {
                 }
             });
         } else {
-            //
+            // Perform a question
+            $("#questioncontainer").style.display = "none";
+            $("questionform").style.display = "";
         }
         $("#loading").hide();
             
