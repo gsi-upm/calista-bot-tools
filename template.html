@@ -142,9 +142,9 @@ function loadUserProgress() {
     });
 }
 
-function sendQuestion(question) {
-    var bot_uri = "http://demos.gsi.dit.upm.es/gsibot/bottle/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user=pybossatest&q=";
-    var req_uri = bot_uri + question;
+function sendQuestion(question, bot_base) {
+    var bot_uri_filler = "/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user=pybossatest&q=";
+    var req_uri = bot_base + bot_uri_filler + question;
     
     $.get(req_uri, function(bot_response) {
         if (bot_response.dialog.response) {
@@ -162,7 +162,7 @@ pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         loadUserProgress();
         
-        if (typeof task.info.question != 'undefined') {
+        if (task.info.question != '') {
             // Evaluate previous question.
             $('#question').html(task.info.question);
             $('#botanswer').html(task.info.botanswer);

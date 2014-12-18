@@ -1,4 +1,3 @@
-Pregunta,Concepto,URL,
 Hola,
 que es un while?,while
 eres el profesor,

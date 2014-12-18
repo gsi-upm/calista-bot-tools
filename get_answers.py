@@ -49,6 +49,11 @@ def main(url):
     lines =  get_test_phrases()
     
     responses = []
+    
+    # Get 10 random lines, instead of the full list
+    
+    
+    #rlines = [lines.pop(random.randrange(len(lines))) for _ in xrange(10)]
     for line in lines:
         datos = line.split(",") 
         request = format_url(datos[0], url, agent)
@@ -58,8 +63,23 @@ def main(url):
         
         # Adds
         responses.append(get_response_data(response))
-            
-    print json.dumps(responses, indent=4)
+    
+    # Select 10 responses that are not "Lo siento, no he entendido la pregunta"
+    errorline = "Lo siento"
+    rlines = []
+
+    while len(rlines) <10:
+        ri = random.randrange(len(responses))
+        botanswer = responses[ri]['botanswer'] 
+        if len(botanswer) != 0:
+            if  not botanswer.startswith(errorline):
+                rlines.append(responses.pop(ri))
+     
+    
+    # Add the last task for the live question
+    rlines.append({'question': '', 'botanswer': '';'boturi': url})
+    
+    print json.dumps(rlines, indent=4)
 
 if __name__ == "__main__":
 
