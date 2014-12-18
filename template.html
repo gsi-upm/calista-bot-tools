@@ -64,8 +64,12 @@
 </div>
 
 <script>
+// Bot_base
+var bot_base = "";
+
 // Default language
 var userLocale = "en";
+
 // Translations
 var messages = {"en": {
                         "i18n_welldone": "Well done!",
@@ -119,8 +123,8 @@ $("#qform").submit(function(event) {
     // Set the question.
     $('#question').html(dialog.q);
     $('#botanswer').html(dialog.response);
-    $('questioncontainer').style.display = "";
-    $('questionform').style.display = "none";
+    $('#questioncontainer').css("display", "");
+    $('#questionform').css("display", "none");
     
 });
 
@@ -132,7 +136,7 @@ function i18n_translate() {
     }
 }
 function loadUserProgress() {
-    pybossa.userProgress('calistabottest').done(function(data){
+    pybossa.userProgress('calistabottester').done(function(data){
         var pct = Math.round((data.done*100)/data.total);
         $("#progress").css("width", pct.toString() +"%");
         $("#progress").attr("title", pct.toString() + "% completed!");
@@ -142,7 +146,7 @@ function loadUserProgress() {
     });
 }
 
-function sendQuestion(question, bot_base) {
+function sendQuestion(question) {
     var bot_uri_filler = "/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user=pybossatest&q=";
     var req_uri = bot_base + bot_uri_filler + question;
     
@@ -184,9 +188,12 @@ pybossa.presentTask(function(task, deferred) {
                 }
             });
         } else {
+        
+            // Sets the bot uri:
+            bot_base = task.info.boturi;
             // Perform a question
-            $("#questioncontainer").style.display = "none";
-            $("questionform").style.display = "";
+            $("#questioncontainer").css("display", "none");
+            $("questionform").css("display", "");
         }
         $("#loading").hide();
             
@@ -197,5 +204,5 @@ pybossa.presentTask(function(task, deferred) {
         $("#finish").fadeIn(500);
     }
 });
-pybossa.run('calistabottest');
+pybossa.run('calistabottester');
 </script>

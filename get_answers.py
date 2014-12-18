@@ -77,7 +77,7 @@ def main(url):
      
     
     # Add the last task for the live question
-    rlines.append({'question': '', 'botanswer': '';'boturi': url})
+    rlines.append({'question': '', 'botanswer': '', 'boturi': url})
     
     print json.dumps(rlines, indent=4)
 
