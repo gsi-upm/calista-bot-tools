@@ -55,10 +55,11 @@
             </div>
         </div>
         <div id="questionform" style="display:none">
-            <form name="qform">
-                <input type="text" name="q"/>
-                <input type="submit" name="submit" value="Send"/>
-            </form>
+            <h2> Ask a question to our bot!</h2>
+            <!--<form name="qform">-->
+                <input type="text" id="q"/>
+                <input type="submit" id="submit" value="Send"/>
+            <!--</form>-->
         </div>
     </div>
 </div>
@@ -66,6 +67,8 @@
 <script>
 // Bot_base
 var bot_base = "";
+
+var task_id = 0;
 
 // Default language
 var userLocale = "en";
@@ -114,18 +117,11 @@ var messages = {"en": {
 
 });
 
-$("#qform").submit(function(event) {
-
+$("#submit").click(function(event) {
     // The question
-    var q = $("input:q").val();
+    var q = $("#q").val();
     var dialog = sendQuestion(q);
-    
-    // Set the question.
-    $('#question').html(dialog.q);
-    $('#botanswer').html(dialog.response);
-    $('#questioncontainer').css("display", "");
-    $('#questionform').css("display", "none");
-    
+
 });
 
 function i18n_translate() {
@@ -146,13 +142,22 @@ function loadUserProgress() {
     });
 }
 
-function sendQuestion(question) {
+function sendQuestion(question, id) {
     var bot_uri_filler = "/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user=pybossatest&q=";
     var req_uri = bot_base + bot_uri_filler + question;
     
+    console.log(req_uri);
+    
     $.get(req_uri, function(bot_response) {
         if (bot_response.dialog.response) {
-            return bot_response.dialog;
+            // Set the question.
+            console.log(bot_response.dialog.q);
+            console.log(bot_response.dialog.response);
+            $('#question').html(bot_response.dialog.q);
+            $('#botanswer').html(bot_response.dialog.response);
+            $('#questioncontainer').css("display", "");
+            $('#questionform').css("display", "none");
+
         }
     });
     return "Error performing the request";
@@ -191,9 +196,29 @@ pybossa.presentTask(function(task, deferred) {
         
             // Sets the bot uri:
             bot_base = task.info.boturi;
+            task_id = 
             // Perform a question
             $("#questioncontainer").css("display", "none");
-            $("questionform").css("display", "");
+            $("#questionform").css("display", "");
+            $('.btn-answer').off('click').on('click', function(evt) {
+                var answer = $(evt.target).attr("value");
+                if (typeof answer != 'undefined') {
+                    //console.log(answer);
+                    var q = $("#question").html();
+                    var ans = $("#botanswer").html();
+                    var to_store = "q: " + q + " botanser: " + ans + "useranswer: " + answer;
+                    pybossa.saveTask(task.id, to_store).done(function() {
+                        deferred.resolve();
+                });
+                $("#loading").fadeIn(500);
+                    if ($("#disqus_thread").is(":visible")) {
+                        $('#disqus_thread').toggle();
+                        $('.btn-disqus').toggle();
+                    }
+                } else {
+                    $("#error").show();
+                }
+            });
         }
         $("#loading").hide();
             
