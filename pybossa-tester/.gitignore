@@ -1,0 +1,15 @@
+bot_tasks.json
+
+
+# From https://github.com/github/gitignore
+# Vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+# Kate Swap Files 
+.*.kate-swp
+.swp.*
