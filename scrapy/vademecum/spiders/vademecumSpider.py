@@ -5,6 +5,8 @@ from vademecum.items import VademecumItem
 
 import re
 import bs4
+import json
+
 
 class vademecumSpider(scrapy.Spider):
     
@@ -118,5 +120,8 @@ class vademecumSpider(scrapy.Spider):
         doc['broader'] = self.url_base.format(topic_uri=topics[0])
         doc['narrower'] = [self.url_base.format(topic_uri=topic) for topic in topics[1:]]
 
-        print len(doc['examples'])
+        # Get the filename
+        htmlfile = response.url.split("/")[-1]
+        filename = "json/{number}.json".format(number=htmlfile[:htmlfile.index(".html")])
+        
         return doc
