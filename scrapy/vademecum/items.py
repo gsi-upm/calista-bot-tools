@@ -28,3 +28,5 @@ class VademecumItem(scrapy.Item):
     broader = scrapy.Field()
     narrower = scrapy.Field()
     
+    # List with examples.
+    examples = scrapy.Field()

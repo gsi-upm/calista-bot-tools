@@ -11,7 +11,7 @@ class vademecumSpider(scrapy.Spider):
     # Test spider to get the vademecum.IO
     name = 'vademecum'
     allowed_domains = ['http://www.dit.upm.es/']    
-    start_urls = ['http://www.dit.upm.es/~pepe/libros/vademecum/topics/69.html']
+    start_urls = ['http://www.dit.upm.es/~pepe/libros/vademecum/topics/84.html']
     
     url_base = "http://www.dit.upm.es/~pepe/libros/vademecum/topics/{topic_uri}"
 
@@ -98,9 +98,15 @@ class vademecumSpider(scrapy.Spider):
                 
         # I should chose either xpath or regexp...
         
-        extables = response.xpath('//table[@class="MsoNormalTable"]/tbody/tr/td').extract()
+        extables = response.xpath('//table[@class="MsoNormalTable"]/tr/td')
+        examples = []
         
-        print extables
+        for example in extables:
+            table_content = example.xpath('p[contains(@class, "PreformattedText")]').extract()
+            if table_content:
+                examples.append(bs4.BeautifulSoup(' '.join(table_content)).get_text())
+        
+        doc['examples'] = examples
         # How do we add this?
         warning_note = response.xpath('//p[@align="center"]/b/span/text()').extract()
         
@@ -112,5 +118,5 @@ class vademecumSpider(scrapy.Spider):
         doc['broader'] = self.url_base.format(topic_uri=topics[0])
         doc['narrower'] = [self.url_base.format(topic_uri=topic) for topic in topics[1:]]
 
-        
+        print len(doc['examples'])
         return doc
