@@ -14,6 +14,7 @@ class VademecumItem(scrapy.Item):
     title = scrapy.Field()
     alternative = scrapy.Field()
     concept = scrapy.Field()
+    url = scrapy.Field()
     
     # Full text
     definition = scrapy.Field()
@@ -30,3 +31,6 @@ class VademecumItem(scrapy.Item):
     
     # List with examples.
     examples = scrapy.Field()
+
+    # Template for the exporter
+    template = "namedIndivual"

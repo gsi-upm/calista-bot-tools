@@ -15,3 +15,7 @@ NEWSPIDER_MODULE = 'vademecum.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'vademecum (+http://www.yourdomain.com)'
+
+FEED_EXPORTERS = {
+    'jsonindented' : 'vademecum.exporters.jsonexporter.jsonExporter'
+    }
