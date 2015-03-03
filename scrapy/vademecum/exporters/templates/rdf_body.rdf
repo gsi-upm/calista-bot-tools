@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY dcterms "http://purl.org/dc/terms/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY skos "http://www.w3.org/TR/skos-reference/" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://dit.upm.es/~amardomingo/vademecumscheme#"
+     xml:base="http://dit.upm.es/~amardomingo/vademecumscheme#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:dcterms="http://purl.org/dc/terms/"
+     xmlns:skos="http://www.w3.org/TR/skos-reference/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://dit.upm.es/~amardomingo/vademecumscheme">
+        <owl:imports rdf:resource="http://purl.org/dc/terms/"/>
+        <owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+    </owl:Ontology>
+    
+    <skos:ConceptScheme rdf:about="VademecumScheme">
+        {% for concept_key in data['concepts'] %}
+        <skos:hasTopConcept>{{ data['concepts'][concept_key] }}</skos:hasTopConcept>
+        {% endfor %}
+    </skos:ConceptScheme>
+    
+    <!--Concepts in the vademecum -->
+    {% for concept_key in data['concepts'] %}
+    <skos:Concept rdf:ID="{{ data['concepts'][concept_key] }}">
+        <dcterms:title>{{ concept_key }}</dcterms:title>
+        <skos:topConceptOf>VademecumScheme</skos:topConceptOf>
+    </skos:Concept>
+    
+    {% endfor %}
+    
+    {% for item in data['items'] %}
+    <skos:Concept rdf:about="{{ item['url'] }}">
+        <dcterms:title xml:lang="es">{{ item['title'] }}</dcterms:title>
+        {% if item['alternative'] %}<dcterms:alternative xml:lang="en">{{ item['alternative'] }}</dcterms:alternative>{%endif %}
+        <skos:definition>{{ item['definition'] }}</skos:definition>
+        <dcterms:description>{{ item['description'] }}</dcterms:description>
+        {% for relatedItem in item['links'] %}<skos:related>{{ relatedItem }}</skos:related> {% endfor %}
+        {% for narrowerItem in item['narrower'] %}<skos:narrower>{{ narrowerItem }}</skos:narrower> {% endfor %}
+        {% if item['concept'] in concepts %}<skos:broader>{{ concepts[item['concept']] }}</skos:broader>
+        {% else %}<skos:broader>{{ item['broader']}}</skos:broader>{% endif %}
+        {% for example in item['example'] %}<skos:example>{{ example }}</skos:example> {% endfor %}
+        <skos:inScheme>VademecumScheme</skos:inScheme>
+    </skos:Concept>
+
+    {% endfor %}
+</rdf:RDF>

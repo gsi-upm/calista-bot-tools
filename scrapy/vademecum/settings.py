@@ -17,5 +17,6 @@ NEWSPIDER_MODULE = 'vademecum.spiders'
 #USER_AGENT = 'vademecum (+http://www.yourdomain.com)'
 
 FEED_EXPORTERS = {
-    'jsonindented' : 'vademecum.exporters.jsonexporter.jsonExporter'
+    'jsonindented' : 'vademecum.exporters.jsonexporter.jsonExporter',
+    'jinjardf': 'vademecum.exporters.jinjardfexporter.JinjaRDFExporter'
     }
