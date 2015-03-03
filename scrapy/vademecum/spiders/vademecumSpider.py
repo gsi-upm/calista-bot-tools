@@ -15,7 +15,9 @@ class vademecumSpider(scrapy.Spider):
     allowed_domains = ['http://www.dit.upm.es/']        
     url_base = "http://www.dit.upm.es/~pepe/libros/vademecum/topics/{topic_uri}"
     
-    start_urls = [url_base.format(topic_uri=str(i)+".html") for i in xrange(4, 385)]
+    # The vademecum data goes from 4.html to 394.html
+    # (From 395 to 399 there are random 404 that I haven't figure out yet)
+    start_urls = [url_base.format(topic_uri=str(i)+".html") for i in xrange(4, 394)]
 
 
     def parse(self, response):
@@ -37,10 +39,9 @@ class vademecumSpider(scrapy.Spider):
         # There are some other cases:
         # 75. Fichero fuente [source code file]   ---  ^(\d+)\.\s+(.+)\[(.+)\]
         # número variable de argumentos (varargs)
-        
         if "[" in header:
             # We are in the second case
-            match = re.search("(\d+)\.\s(\S+)\s\[(.+)\]\s\((.+)\)", header)
+            match = re.search("(\d+)\.\s(\S+)\s\[(.+)\]\s\((.+)\)", header, flags=re.U)
             
             if match:
                 # We should have 4 matches
@@ -49,28 +50,27 @@ class vademecumSpider(scrapy.Spider):
                     doc['alternative'] = match.group(3)
                     doc['concept'] = match.group(4)
             else:
-                match = re.search("^(\d+)\.\s+(.+)\[(.+)\]$", header)
+                match = re.search("^(\d+)\.\s+(.+)\[(.+)\]$", header, flags=re.U)
                 if match:
                     doc['title'] = match.group(1)
                     doc['alternative'] = match.group(2)
         elif "(" in header:
             # The first case
-            match = re.search("(\d+)\.\s(\S+)\s\((.*)\)", header)
+            match = re.search("(\d+)\.\s?(\S+)\s\((.[^\)]+)\)", header, flags=re.U)
             if match:
                 # 3 matches
                 if match.lastindex == 3:
                     doc['title'] = match.group(2)
                     doc['concept'] = match.group(3)
             else:
-                match = re.search("^(.+)\s\((.*)\)$", header)
-                
+                match = re.search("^([\w\s]+)\s\((.[^\)]+)\)", header, flags=re.U)
                 if match:
                     doc['title'] = match.group(1)
                     doc['concept'] = match.group(2)
                 
         elif header[0].isdigit():
             # The third case
-            match = re.search("(\d+)\.\s*(\S+)", header)
+            match = re.search("(\d+)\.\s*(\S+)", header, re.U)
             
             if match.lastindex == 2:
                 doc['title'] = match.group(2)
@@ -90,10 +90,10 @@ class vademecumSpider(scrapy.Spider):
         
         if "." in body:
             # First sentence
-            doc['description'] = body[:body.index('.')]
+            doc['definition'] = body[:body.index('.')]
             
             #Full text
-            doc['definition'] = body
+            doc['description'] = body
         else:
             #Asume just one sentence
             doc['description'] = body
