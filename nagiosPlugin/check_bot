@@ -1,0 +1,83 @@
+#!/usr/bin/python
+
+import argparse
+import json, urllib
+
+from unidecode import unidecode
+
+
+OK = 0
+WARNING = 1
+CRITICAL = 2
+UNKNOWN = 3
+
+def format_url(question, url, agent):
+    '''
+    Format the url for the bot query
+    '''
+    url_format = u"{base}/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user={user}&q={query}&undefined="
+    q = urllib.quote_plus(unidecode(question), "")
+    return url_format.format(base=url, user=agent, query=q)
+
+def test_bot(args):
+    '''
+    Sends two querys to the bot to test the results
+    '''
+    
+    status = 3
+    # First, test for a simple question:
+    query_hola = format_url(u"Hola", args.url, args.agent)
+    
+    # First test block
+    try:
+        response = urllib.urlopen(query_hola).read()
+        r = json.loads(response)
+        
+        if not 'response' in r['dialog']:
+            print("BOT NOT RESPONDING")
+            return CRITICAL
+        # Else just continue testing.
+
+    except Exception as e:
+        print("Error performing simple greeting")
+        
+        if args.verbose > 2:
+            print(e)
+        elif args.verbose >1:
+            print(e.message)
+        return CRITICAL
+    
+    # Test for a maia-required question
+    try:
+        query_for = format_url(u"que es un for", args.url, args.agent)
+        response = urllib.urlopen(query_for).read()
+        r = json.loads(response)
+        
+        if not 'response' in r['dialog']:
+            print("Bot status: Error with maia")
+            return WARNING
+        else:
+            # Everything is fine
+            print("Bot status: OK")
+            return OK
+
+        response 
+    except Exception as e:
+        print("Error performing maia question")
+        
+        if args.verbose > 2:
+            print(e)
+        elif args.verbose >1:
+            print(e.message)
+        return WARNING
+    
+    # Should never reach here
+    return UNKNOWN
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Nagios plugin for the calista-bot front-end controller")
+    parser.add_argument('-u', '--url', default="http://localhost:8090", help="URL of the talkbot controller")
+    parser.add_argument('-a', '--agent', default="NagiosAgent", help="User to use with the bot")
+    parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
+    
+    exit(test_bot(parser.parse_args()))
