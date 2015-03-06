@@ -9,6 +9,16 @@ Nagios Plugin to check test the [Calista Bot](https://github.com/gsi-upm/calista
 Usage
 ---------------------------------------
 Install it in your nagiosplugins folder. It takes as command line parameter the url of the talkbot controller.
+And example of the command definition:
+
+    # Example comand for nagios
+
+    define command{
+        command_name check_bot
+        command_line /usr/local/nagios/libexec/check_bot --server $HOSTADDRESS$ --agent NagiosAgent
+    }
+
+
 
 How it works
 ---------------------------------------
