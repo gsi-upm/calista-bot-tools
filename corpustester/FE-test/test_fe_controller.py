@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function
 
@@ -18,6 +19,10 @@ import json
 #http://localhost:8090/gsibot/bottle/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user=UoUinQKS8YYlFAchLu9R&q=eres+el+profesor%3F&undefined=
 url_format = u"{base}/TalkToBot?userAgent=web_html_v1&bot=Duke&type=json&user={user}&q={query}&undefined="
 
+# "I don't know' bot answer
+unknown_answer = u"Lo siento, no te he entendido. Podrias reformularlo, ¿por favor?"
+unknown_strict = u'Lo siento'
+
 def get_test_phrases(corpus):
     """
     Read the corpus file, and returns a list with all the phrases
@@ -35,7 +40,7 @@ def format_url(line, url, agent):
     
     return request
     
-def check_response(response, concept, verbose):
+def check_response(response, concept, args):
     """
     Loads the json response and checks if it gets a valid response
     Returns a tuple, with wether the result is valid and the actual response
@@ -49,7 +54,7 @@ def check_response(response, concept, verbose):
         # we consider it valid. For the time being.
         #print "q: {query},\n response: {response}".format(query=response_data['dialog']['q'], response=response_data['dialog']['response'])
         
-        if verbose > 3:
+        if args.verbose > 3:
             print(u'Bot response: {response}'.format(response=dialog[u'response']))
         
         # We have a concept to check
@@ -61,21 +66,24 @@ def check_response(response, concept, verbose):
             # We have a topic and a response:
             if concept in dialog[u'topic']:
                 return (True, dialog[u'response'])
-
-        if "Lo siento," in dialog[u'response']:
+            
+        unknown = unknown_strict if args.strict else unknown_answer
+        
+        if unknown in dialog[u'response']:
             return (False, dialog[u'response'])
         else:
-            # I don't have a topic, but neither a "default" response, so probably a
-            # generic "i'm not the teacher" response.
+            # I don't have a topic, but neither a "default" response, so
+            # either a "Would you want to learn about this (TODO!)
+            # or a generic identification answer
             return (True, dialog[u'response'])
         
     except Exception as e:
         # No json received. Invalid response.
-        if verbose >3:
+        if args.verbose >3:
             print(u"Invalid response: "+ response, file=sys.stderr)
             print(e, file=sys.stderr)
     
-    return False
+    return (False, 'Invalid')
 
 def main(args):
     
@@ -108,7 +116,7 @@ def main(args):
         if len(datos) > 1:
             concept = datos[1]
             
-        q_result = check_response(response, concept, args.verbose)
+        q_result = check_response(response, concept, args)
         if q_result[0]:
             valid_responses.append((datos[0],q_result[1]))
         else:
@@ -141,6 +149,8 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--corpus', default="test_corpus.txt", help="CSV with the questions to test")
     parser.add_argument('-a', '--agent', default="TestAgent", help="User to use with the bot")
     parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
+    parser.add_argument('-s', '--strict', action='store_true', help="Consider non-gambit responses as valid.")
+    parser.set_defaults(strict=False)
     args = parser.parse_args()
     main(args)
     
