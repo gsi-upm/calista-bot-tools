@@ -101,10 +101,10 @@ class vademecumSpider(scrapy.Spider):
             
         # Looks for links
         if "href" in html_content:
+            # links = re.findall('a\shref="(\d+\.html)', response.body)
             links = response.xpath('//p[@class="MsoNormal"]/span/a/@href').extract()
             links = [self.url_base.format(topic_uri=link[:link.index("#")]) for link in links]
             try:
-                pat = re.compile("href\=\"(\S+)#")
                 match = re.findall("href\=\"(\S+)#", html_content)
                 matched_links = [self.url_base.format(topic_uri=link) for link in match]
                 
