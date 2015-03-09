@@ -55,19 +55,23 @@ def check_response(response, concept, args):
         #print "q: {query},\n response: {response}".format(query=response_data['dialog']['q'], response=response_data['dialog']['response'])
         
         if args.verbose > 3:
-            print(u'Bot response: {response}'.format(response=dialog[u'response']))
-        
+            print(u'Bot response: {response}'.format(response=dialog[u'response']), file=args.output)
+         
+        # Non-valid answer, whether strict or not. 
+        unknown = unknown_strict if args.strict else unknown_answer
         # We have a concept to check
         if concept:
             if u'topic' not in dialog:
                 # Bad response
                 return (False, dialog[u'response'])
+            elif unknown in dialog[u'response']:
+                # We have a topic, but we may reject it 
+                # in "strict" mode.
+                return (False, dialog[u'response'])
             
             # We have a topic and a response:
             if concept in dialog[u'topic']:
                 return (True, dialog[u'response'])
-            
-        unknown = unknown_strict if args.strict else unknown_answer
         
         if unknown in dialog[u'response']:
             return (False, dialog[u'response'])
@@ -81,14 +85,15 @@ def check_response(response, concept, args):
         # No json received. Invalid response.
         if args.verbose >3:
             print(u"Invalid response: "+ response, file=sys.stderr)
+            #print(u"Invalid response: "+ response, file=args.output)
             print(e, file=sys.stderr)
     
-    return (False, 'Invalid')
+    return (False, 'Invalid - Unknown response')
 
 def main(args):
     
     if args.verbose > 1:
-        print(u'Using agent: {agent}'.format(agent=args.agent))
+        print(u'Using agent: {agent}'.format(agent=args.agent), file=args.output)
 
     lines =  get_test_phrases(args.corpus)
 
@@ -101,16 +106,16 @@ def main(args):
         request = format_url(datos[0], args.url, args.agent)
         
         if args.verbose > 3:
-            print(u'------------------------------------------------')
-            print(u"Request URL: {url}".format(url=request))
+            print(u'------------------------------------------------', file=args.output)
+            print(u"Request URL: {url}".format(url=request), file=args.output)
         
         # Perform the request
         response = urllib.urlopen(request).read()
         
         if args.verbose > 3:
-            print(u'Question: {question}'.format(question=datos[0]))
+            print(u'Question: {question}'.format(question=datos[0]), file=args.output)
             if len(datos) > 1:
-                print(u'Concept: {concept}'.format(concept=datos[1]))
+                print(u'Concept: {concept}'.format(concept=datos[1]), file=args.output)
         concept = None
         # Adds
         if len(datos) > 1:
@@ -124,22 +129,22 @@ def main(args):
     
     # Print wrong results with a lower verbosity level
     if args.verbose >2:
-        print(u'------------------------------------------------------')
-        print(u"Valid results:")
+        print(u'------------------------------------------------------', file=args.output)
+        print(u"Valid results:", file=args.output)
         for res in valid_responses:
-            print(u"Q: {q}, R: {r}".format(q=res[0], r=res[1]))
-        print(u'------------------------------------------------------')
+            print(u"Q: {q}, R: {r}".format(q=res[0], r=res[1]), file=args.output)
     
     if args.verbose >1:
-        print(u'------------------------------------------------------')
-        print(u"Valid results:")
+        print(u'------------------------------------------------------', file=args.output)
+        print(u"Invalid results:", file=args.output)
         for res in invalid_responses:
-            print(u"Q: {q}, R: {r}".format(q=res[0], r=res[1]))
-        print(u'------------------------------------------------------')
+            print(u"Q: {q}, R: {r}".format(q=res[0], r=res[1]), file=args.output)
+    print(u'------------------------------------------------------', file=args.output)
     
     # Always print final result
     print(u"Resultado: {valid} Validos, {invalid} No validos".format(valid=str(len(valid_responses)),
-                                                                     invalid=str(len(invalid_responses))))
+                                                                     invalid=str(len(invalid_responses))),
+          file=args.output)
     
 
 if __name__ == "__main__":
@@ -150,7 +155,11 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--agent', default="TestAgent", help="User to use with the bot")
     parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
     parser.add_argument('-s', '--strict', action='store_true', help="Consider non-gambit responses as valid.")
+    parser.add_argument('-o', '--output', default=sys.stdout, help="Output file")
     parser.set_defaults(strict=False)
     args = parser.parse_args()
+    # Get log output
+    if args.output != sys.stdout:
+        args.output = codecs.open(args.output, 'w+', 'utf-8-sig')
     main(args)
     
