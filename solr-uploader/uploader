@@ -1,0 +1,96 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+
+import sys
+import argparse
+
+import requests
+
+import json
+
+solr_url="{url}/{core}/update"
+solr_commit="<commit/>"
+solr_clear="<delete><query>*:*</query></delete>"
+solr_charset ='utf-8'
+
+def commit(args):
+    '''
+    Commits the changes
+    '''
+    url = solr_url.format(url=args.url, core=args.core)
+    headers = {'Content-type':'text/xml', 'charset':solr_charset}
+    requests.post(url, data=solr_commit, headers=headers)
+
+def clear(args):
+    '''
+    Clears the solr core
+    '''
+    url = solr_url.format(url=args.url, core=args.core)
+    
+    headers = {'Content-type':'text/xml', 'charset':solr_charset}
+    
+    requests.post(url, data=solr_clear, headers=headers)
+    commit(args)
+    
+def read_json(data_file):
+    '''
+    Read the data from the provided json
+    '''
+    
+    json_file = open(data_file, 'r')
+    
+    data = json.loads(json_file.read())
+    
+    return data
+
+def upload_doc(doc, args):
+    '''
+    Upload a doc to solr
+    '''
+    url = solr_url.format(url=args.url, core=args.core)
+    operations = {'add':{'doc':doc}} 
+    
+    headers = {'Content-type':'application/json', 'charset':solr_charset}
+    
+    requests.post('{url}/json'.format(url=url), data=json.dumps(operations), headers=headers)
+    
+def main(args):
+    '''
+    Perform the necessary requests
+    '''
+    # Clears the core, if asked
+    if args.empty:
+        clear(args)
+        if args.verbose:
+            print("Data in core {core} cleared".format(args.core), file=args.output)
+
+    if args.verbose >2:
+        print("Reading data from {file}".format(args.file), file=args.output)
+    data = read_json(args.data)
+    
+    for key in data.keys():
+        if args.verbose>2:
+            print("Uploading {title}".format(title=doc['title']), file=args.output)
+        doc = data[key]
+        doc['url'] = key
+        upload_doc(doc, args)
+    commit(args)
+        
+    print("Uploaded all {number} doc to solr".format(number=str(len(data))), file=args.output)
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser(description="Uploader for solr", add_help=True)
+    parser.add_argument('-u', '--url', default="http://localhost:8080/solr", help="URL for the solr install")
+    parser.add_argument('-c', '--core', default="elearning", help="The core in use")
+    parser.add_argument('-d', '--data', default="data.json", help="A file with json data")
+    parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
+    parser.add_argument('-e', '--empty', action='store_true', help="Clear the data before upload")
+    parser.add_argument('-o', '--output', default=sys.stdout, help="Log output file")
+    parser.set_defaults(empty=False)
+    args = parser.parse_args()
+    # Get log output
+    if args.output != sys.stdout:
+        args.output = codecs.open(args.output, 'w+', 'utf-8-sig')
+    main(args)
