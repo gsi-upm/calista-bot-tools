@@ -11,6 +11,7 @@ import scrapy
 class VademecumItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    id = scrapy.Field()
     title = scrapy.Field()
     alternative = scrapy.Field()
     concept = scrapy.Field()
@@ -26,8 +27,8 @@ class VademecumItem(scrapy.Item):
     links = scrapy.Field()
     
     # Related topics
-    broader = scrapy.Field()
-    narrower = scrapy.Field()
+    #broader = scrapy.Field()
+    #narrower = scrapy.Field()
     
     # List with examples.
     examples = scrapy.Field()

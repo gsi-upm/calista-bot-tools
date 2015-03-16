@@ -100,6 +100,7 @@ class vademecumSpider(scrapy.Spider):
             doc['definition'] = body
             
         # Looks for links
+        links = []
         if "href" in html_content:
             # links = re.findall('a\shref="(\d+\.html)', response.body)
             links = response.xpath('//p[@class="MsoNormal"]/span/a/@href').extract()
@@ -111,8 +112,11 @@ class vademecumSpider(scrapy.Spider):
             except Exception as e:
                 # Do nothing
                 print e
-            
-            doc['links'] = links
+        topics = response.xpath('//p[@class="msoNormal"]/a/@href').extract()
+        for topic in topics:
+            links.append(self.url_base.format(topic_uri=topic))
+         
+        doc['links'] = links
             
                 
         # I should chose either xpath or regexp...
@@ -129,12 +133,19 @@ class vademecumSpider(scrapy.Spider):
         # How do we add this?
         warning_note = response.xpath('//p[@align="center"]/b/span/text()').extract()
         
-        topics = response.xpath('//p[@class="msoNormal"]/a/@href').extract()
+        #topics = response.xpath('//p[@class="msoNormal"]/a/@href').extract()
         # get the "Related topics" links
         # The first one is the "parent" (broader) topic, 
         # the rest are "child" (narrower) topics.
         
-        doc['broader'] = self.url_base.format(topic_uri=topics[0])
-        doc['narrower'] = [self.url_base.format(topic_uri=topic) for topic in topics[1:]]
+        # At the moment, we just add these to the links field
+        # In the future, we may separate them
+        #doc['broader'] = self.url_base.format(topic_uri=topics[0])
+        #doc['narrower'] = [self.url_base.format(topic_uri=topic) for topic in topics[1:]]
+        
+        # Get the id
+        match = re.search("(\d+)\.html", response.url, flags=re.U)
+        doc['id'] = match.group(1)
+        
         
         return doc
