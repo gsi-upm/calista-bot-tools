@@ -8,6 +8,7 @@ import codecs
 import string
 import random
 import argparse
+import csv
 
 from unidecode import unidecode
 
@@ -27,8 +28,16 @@ def get_test_phrases(corpus):
     """
     Read the corpus file, and returns a list with all the phrases
     """
-    corpus = codecs.open(corpus, 'r', 'utf-8')
-    lines = [line.replace(u"\n", u"") for line in corpus]
+    corpus_reader = csv.reader(open(corpus, 'r'))
+    
+    lines = []
+    rowcount = 0
+    for row in corpus_reader:
+        if rowcount != 0:
+            # Ignore the header
+            lines.append(row)
+        rowcount += 1
+    
     return lines
 
 def format_url(line, url, agent):
@@ -100,10 +109,8 @@ def main(args):
     valid_responses = []
     invalid_responses = []
 
-    # Ignore the header
-    for line in lines[1:]:
-        datos = line.split(",") 
-        request = format_url(datos[0], args.url, args.agent)
+    for line in lines:
+        request = format_url(line[0], args.url, args.agent)
         
         if args.verbose > 3:
             print(u'------------------------------------------------', file=args.output)
@@ -113,19 +120,19 @@ def main(args):
         response = urllib.urlopen(request).read()
         
         if args.verbose > 3:
-            print(u'Question: {question}'.format(question=datos[0]), file=args.output)
-            if len(datos) > 1:
-                print(u'Concept: {concept}'.format(concept=datos[1]), file=args.output)
+            print(u'Question: {question}'.format(question=line[0]), file=args.output)
+            if line[1] != 1:
+                print(u'Concept: {concept}'.format(concept=line[1]), file=args.output)
         concept = None
         # Adds
-        if len(datos) > 1:
-            concept = datos[1]
+        if line[1] != '':
+            concept =line[1]
             
         q_result = check_response(response, concept, args)
         if q_result[0]:
-            valid_responses.append((datos[0],q_result[1]))
-        else:
-            invalid_responses.append((datos[0],q_result[1]))
+            valid_responses.append((line[0],q_result[1]))
+        #else:
+            invalid_responses.append((line[0],q_result[1]))
     
     # Print wrong results with a lower verbosity level
     if args.verbose >2:

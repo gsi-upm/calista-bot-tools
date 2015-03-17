@@ -8,13 +8,13 @@ tienes un ejemplo de for?,for,¬sendMaia content for,solr
 sabes lo que es un metodo?,metodo,¬sendMaia content metodo,solr
 me gustaría saber más sobre interfaces,interfaz,¬sendMaia content interfaces,solr
 sabes algo sobre iteracion?,iteracion,¬sendMaia content iteracion,solr
-qué es iteración?,iteracion,¬sendMaia content iteracion,solr
-Qué es la iteración?,iteracion,¬sendMaia content iteracion,solr
+que es iteracion?,iteracion,¬sendMaia content iteracion,solr
+Que es la iteración?,iteracion,¬sendMaia content iteracion,solr
 para qué sirve un else?,else,¬sendMaia content else,solr
 Qué es un bucle?,bucles,¬sendMaia content bucle,solr
 Como puedo usar un if?,if,¬sendMaia content if,solr
 me gustaría ver un ejemplo de for?,for,¬sendMaia example for,solr
-qué es un excepción?,excepcion,¬sendMaia content excepcion,solr
+que es un excepción?,excepcion,¬sendMaia content excepcion,solr
 Para que sirve un catch?,catch,¬sendMaia content catch,solr
 tienes un ejemplo de try?,try,¬sendMaia example try,solr
 que es un int?,int,¬sendMaia content int,solr
@@ -22,7 +22,7 @@ como represento un número?,numero,¬sendMaia content numero,solr
 que es un numero?,numero,¬sendMaia content numero,solr
 que es una string?,string,¬sendMaia content string,solr
 como repesento un entero?,int,¬sendMaia content entero,solr
-qué es un método?,metodo,¬sendMaia content metodo,solr
+qué es un metodo?,metodo,¬sendMaia content metodo,solr
 sabes qué es un condicional?,condicional,¬sendMaia content condicional,solr
 Como hago un bucle?,bucles,¬sendMaia content bucle,solr
 qué es un dowhile?,dowhile,¬sendMaia content dowhile,solr
@@ -37,11 +37,11 @@ que es javadoc?,javadoc,¬sendMaia content javadoc,solr
 ¿Como hago una clase?,clases,¬sendMaia content clase,solr
 Tienes un ejemplo de dowhile?,dowhile,¬sendMaia example dowhile,solr
 No entiendo que es iteracion,iteracion,¬sendMaia content iteracion,solr
-Qué es una excepción?,excepcion,¬sendMaia content excepcion,solr
+Que es una excepcion?,excepcion,¬sendMaia content excepcion,solr
 Sabes lo que es un metodo privado?,metodo,¬sendMaia content privado,solr
-Qué es iteración?,iteracion,¬sendMaia content iteracion,solr
+Que es iteracion?,iteracion,¬sendMaia content iteracion,solr
 como hago una interfaz,interfaz,¬sendMaia content interfaz,solr
-Sabes qué es una interfaz?,interfaz,¬sendMaia content interfaz,solr
+Sabes que es una interfaz?,interfaz,¬sendMaia content interfaz,solr
 que es una variable,variable,¬sendMaia content variable,
-quien eres?,,Me llamo Duke  y soy un bot asistente para ayudarte con tus preguntas.,chatscript
+quien eres?,,Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.,chatscript
 Eres una persona?,,"No, soy un bot asistente para ayudarte a encontrar respuestas.",chatscript
