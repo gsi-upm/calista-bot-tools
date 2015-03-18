@@ -41,7 +41,7 @@ class vademecumSpider(scrapy.Spider):
         # número variable de argumentos (varargs)
         if "[" in header:
             # We are in the second case
-            match = re.search("(\d+)\.\s(\S+)\s\[(.+)\]\s\((.+)\)", header, flags=re.U)
+            match = re.search("(\d+)\.\s*(.+)\s\[(.+)\]\s?\((.+)\)", header, flags=re.U)
             
             if match:
                 # We should have 4 matches
@@ -50,20 +50,26 @@ class vademecumSpider(scrapy.Spider):
                     doc['alternative'] = match.group(3)
                     doc['concept'] = match.group(4)
             else:
-                match = re.search("^(\d+)\.\s+(.+)\[(.+)\]$", header, flags=re.U)
+                match = re.search("^(\d+)\.\s*(.+)\[(.+)\]$", header, flags=re.U)
                 if match:
                     doc['title'] = match.group(1)
                     doc['alternative'] = match.group(2)
+                else:
+                    #corner case
+                    match = re.search("(\d+)\.\s*(\S+)\s*\((\S+)\)", header, flags=re.U)
+                    if match:
+                        doc['title'] = match.group(1)
+                        doc['concept'] = match.group(2)
         elif "(" in header:
             # The first case
-            match = re.search("(\d+)\.\s?(\S+)\s\((.[^\)]+)\)", header, flags=re.U)
+            match = re.search("(\d+)\.\s*(.+)\s\((.[^\)]+)\)", header, flags=re.U)
             if match:
                 # 3 matches
                 if match.lastindex == 3:
                     doc['title'] = match.group(2)
                     doc['concept'] = match.group(3)
             else:
-                match = re.search("^([\w\s]+)\s\((.[^\)]+)\)", header, flags=re.U)
+                match = re.search("^(.+)\s\((.[^\)]+)\)", header, flags=re.U)
                 if match:
                     doc['title'] = match.group(1)
                     doc['concept'] = match.group(2)
