@@ -64,12 +64,14 @@ def test_solr(question, args):
     '''
     url = solr_base.format(url=args.solr)
     words = question.split(" ")
-    q = ' OR '.join(['search_field:{q}'.format(q=word) for word in words])
+    # We use solr's dismax for full phrase search
+    # The values should probably be a config option
     
-    payload= {'q':q, 'wt':'json'}
+    payload= {'q':question, 'wt':'json', 'rows':'1',
+              'defType':'dismax', 'qf':'title^10.0 description^2.0'}
     
     if args.verbose >2:
-        print("Sending {q} to solr".format(q=str(q)),file=args.output)
+        print("Sending {q} to solr".format(q=str(question)),file=args.output)
     response = requests.get(url, params=payload).json()
     
     return response['response']['docs']
@@ -106,7 +108,7 @@ def process_response(cs_responses, solr_responses, corpus, args):
                     solr_valid += 1
                 else:
                     if args.verbose > 2:
-                        print(u"Invalid Solr Concept: {concept}, Expect: {ex}".format(concept=solr_concept, ex=concept), file=args.output)
+                        print(u"Invalid Solr Concept: {concept}, Expected: {ex}".format(concept=solr_concept, ex=concept), file=args.output)
                     solr_invalid += 1
             else:
                 if args.verbose >2:
