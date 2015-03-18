@@ -8,6 +8,8 @@ import csv
 import socket
 import requests
 
+from unidecode import unidecode
+
 import argparse
 
 solr_base = "{url}/select"
@@ -97,24 +99,25 @@ def process_response(cs_responses, solr_responses, corpus, args):
             
             # Solr should now about this
             if len(solr_r) != 0:
-                if concept in solr_r[0]['title']:
+                solr_concept = unidecode(solr_r[0]['title']).lower()
+                if unidecode(concept).strip() in solr_concept:
                     if args.verbose >2:
-                        print("Valid Solr Concept: {solr_r}".format(solr_r=solr_r[0]['title']), file=args.output)
+                        print(u"Valid Solr Concept: {solr_r}".format(solr_r=solr_concept), file=args.output)
                     solr_valid += 1
                 else:
                     if args.verbose > 2:
-                        print("Invalid Solr Concept: None {concept}".format(concept=concept), file=args.output)
+                        print(u"Invalid Solr Concept: {concept}, Expect: {ex}".format(concept=solr_concept, ex=concept), file=args.output)
                     solr_invalid += 1
             else:
                 if args.verbose >2:
-                    print("Solr Concept: None", file=args.output)
+                    print(u"Solr Concept: None", file=args.output)
                 solr_invalid +=1
                     
                 
         # CS should respond either with the sentence, or sending info to maia
         if line[2] in cs_r:
             if args.verbose >2:
-               print("Valid CS Response: {cs_r}".format(cs_r=cs_r), file=args.output)
+               print(u"Valid CS Response: {cs_r}".format(cs_r=unidecode(cs_r)), file=args.output)
             cs_valid +=1
         else:
             if args.verbose >2:
