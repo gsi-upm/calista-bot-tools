@@ -17,12 +17,14 @@ solr_base = "{url}/select"
 cs_gambit = ""
 cs_error = "Lo siento, no te he entendido. Podrias reformularlo, ¿por favor?"
 
-def read_corpus(args):
+def read_corpus(corpus_file, log_info):
     '''
     Read and return the corpus data from a CSV
+    
+    log_info = (verbose, out_file)
     '''
     
-    f_csv = open(args.corpus, 'r')
+    f_csv = open(corpus_file, 'r')
     
     reader = csv.reader(f_csv)
     data = []
@@ -33,20 +35,20 @@ def read_corpus(args):
             data.append(row)
         rcount+=1
         
-    if args.verbose >2:
-        print("Readed {lines} from the corpus {corpus}".format(lines=str(rcount), corpus=(args.corpus)), file=args.output)
+    if log_info[0] >2:
+        print("Readed {lines} from the corpus {corpus}".format(lines=str(rcount), corpus=(args.corpus)), file=log_info[1])
     
     return data
 
-def test_chatscript(question, args):
+def test_chatscript(question, agent, ip):
     '''
     Send the question to chatscript
     '''
-    query = args.agent + '\0' + 'Duke\0' + question +'\0'
+    query = agent + '\0' + 'Duke\0' + question +'\0'
     
     s = socket.socket()
     # Split host and port
-    cs_tcp = args.ip.split(":")
+    cs_tcp = ip.split(":")
     s.connect((cs_tcp[0],int(cs_tcp[1])))
     s.send(query)
     # Read response
@@ -58,11 +60,12 @@ def test_chatscript(question, args):
     
     return response
 
-def test_solr(question, args):
+def test_solr(question, url, log_info):
     '''
     Send the question to solr
+    log_info = (verbose, out_file)
     '''
-    url = solr_base.format(url=args.solr)
+    url = solr_base.format(url=url)
     words = question.split(" ")
     # We use solr's dismax for full phrase search
     # The values should probably be a config option
@@ -70,8 +73,8 @@ def test_solr(question, args):
     payload= {'q':question, 'wt':'json', 'rows':'1',
               'defType':'dismax', 'qf':'title^10.0 description^2.0'}
     
-    if args.verbose >2:
-        print("Sending {q} to solr".format(q=str(question)),file=args.output)
+    if log_info[0] >2:
+        print("Sending {q} to solr".format(q=str(question)),file=log_info[1])
     response = requests.get(url, params=payload).json()
     
     return response['response']['docs']
@@ -146,16 +149,16 @@ def main(args):
     '''
     
     # Reads the questions from the corpus
-    csv_lines = read_corpus(args)
+    csv_lines = read_corpus(args.corpus, (args.verbose, args.output))
     
     cs_responses = []
     solr_responses = []
     for question in csv_lines:
         # First, send the question to chatscript
-        cs_responses.append(test_chatscript(question[0], args))
+        cs_responses.append(test_chatscript(question[0], args.agent, args.ip))
         
         # Send to solr
-        solr_responses.append(test_solr(question[0], args))
+        solr_responses.append(test_solr(question[0],args.solr, (args.verbose, args.output)))
         
     # Check the responses and print the results
     process_response(cs_responses, solr_responses, csv_lines, args)
