@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys, os
 
 root_folder = os.path.dirname(__file__)
-sys.path.append(os.path.abspath(os.path.join(root_folder, '../QA-test')))
+sys.path.append(os.path.abspath(os.path.join(root_folder, 'QA-test')))
 
 import tester
 
