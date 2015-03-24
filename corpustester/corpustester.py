@@ -10,9 +10,10 @@ import tester
 from flask import Flask
 
 app = Flask(__name__)
+app.debug = True
 
 # TODO: Config file
-corpus_file = "../corpus/test_corpus.txt"
+corpus_file = "{root}/corpus/test_corpus.txt".format(root=root_folder)
 cs_agent = "webtest"
 cs_ip = "127.0.0.1:1024"
 solr_url = "http://localhost:8080/solr/elearning"
@@ -21,7 +22,7 @@ def base():
     '''
     Index - Just a button to perform the test
     '''
-    return open('{root}static/templates/index.html'.format(root=root_folder), 'r').read()
+    return open('{root}/static/templates/index.html'.format(root=root_folder), 'r').read()
 
 @app.route('/test')
 def test_corpus():
@@ -46,5 +47,4 @@ def test_corpus():
     return str(cs_responses + solr_responses)
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()
