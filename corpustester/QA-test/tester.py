@@ -31,7 +31,7 @@ def read_corpus(corpus_file, log_info):
     data = []
     rcount = 0
     for row in reader:
-        if rcount != 1:
+        if rcount != 0:
             # Not the header
             data.append(row)
         rcount+=1
