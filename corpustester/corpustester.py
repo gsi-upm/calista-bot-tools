@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 from __future__ import print_function
 import sys, os
-import codecs
+import codecs, unidecode
+
+from unidecode import unidecode
 
 root_folder = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.join(root_folder, 'QA-test')))
@@ -9,6 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(root_folder, 'QA-test')))
 import tester
 
 from flask import Flask
+import jinja2
 
 app = Flask(__name__)
 app.debug = True
@@ -23,6 +26,13 @@ solr_url = "http://localhost:8080/solr/elearning"
 response_valid = 'valid'
 response_invalid = 'invalid'
 response_ne = 'ne'
+response_per = 'per'
+
+#Jinja2 exporters
+jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader('corpustester', 'static/templates'))
+jinja2_env.autoescape = True
+
+
 
 @app.route('/')
 def base():
@@ -53,7 +63,11 @@ def test_corpus():
 
     results = process_responses(corpus, cs_responses, solr_responses)
     
-    return str(results)
+    test_template = jinja2_env.get_template('test.html')
+    
+    response_html = test_template.render(totals=results['counts'], results=results['r'])
+    
+    return response_html
 
 def process_responses(corpus, cs_responses, solr_responses):
     '''
@@ -70,12 +84,13 @@ def process_responses(corpus, cs_responses, solr_responses):
     result = []
     
     for i in xrange(len(corpus)):
-        cs_r = cs_responses[i]
+        cs_r = unidecode(cs_responses[i])
         solr_r = solr_responses[i]
         line = corpus[i]
         
-        current = {'question':line[0], 'concept':line[1]}
-        
+        current = {'question':unidecode(line[0]), 'concept':unidecode(line[1])}
+        current['solr'] = {'title':'', 'score':'', 'definition':''}
+
         # Do we have a solr response?
         if len(solr_r)!= 0:
             # Question, concept, solr_response
@@ -92,6 +107,12 @@ def process_responses(corpus, cs_responses, solr_responses):
         current['cs'] = cs_r
         
         result.append(current)
+    
+    # Get count percentages
+    
+    solr_results[response_per] = 100 * solr_results[response_valid] / len(solr_results)
+    cs_results[response_per] = 100 * cs_results[response_valid] / len(cs_results)
+    
     return {'counts':{'solr':solr_results, 'cs':cs_results}, 'r':result}
 
 
