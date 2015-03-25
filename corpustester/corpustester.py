@@ -36,22 +36,24 @@ def test_corpus():
     '''
     Send the tests to the corpus and present the response.
     '''
-    corpus = tester.read_corpus(corpus_file, (0, sys.stderr))
+    corpus = tester.read_corpus(corpus_file, (3, sys.stderr))
     
     cs_responses = []
     solr_responses = []
     # Perform the tests
-
+    print(corpus, file=sys.stderr)
     for question in corpus:
+        print(question, file=sys.stderr)
         # First, send the question to chatscript
         cs_responses.append(tester.test_chatscript(question[0], cs_agent, cs_ip))
         
         # Send to solr
         solr_responses.append(tester.test_solr(question[0], solr_url,
                                                (0, sys.stderr)))
+
+    results = process_responses(corpus, cs_responses, solr_responses)
     
-    
-    return str(cs_responses + solr_responses)
+    return str(results)
 
 def process_responses(corpus, cs_responses, solr_responses):
     '''
@@ -78,11 +80,16 @@ def process_responses(corpus, cs_responses, solr_responses):
         if len(solr_r)!= 0:
             # Question, concept, solr_response
             s_r = process_solr(line[0], line[1], solr_r)
-            solr_results[solr_r[0]]+= 1
-            current['solr'].append(s_r[1])
+            solr_results[s_r[0]] += 1
+            current['solr'] = s_r[1]
         else:
             # Bad response from solr
-            solr_results[response_valid] +=1
+            solr_results[response_invalid] +=1
+        
+        # ChatScript
+        cs_p = process_cs(line[0], line[1], line[2], cs_r)
+        cs_results[cs_p]+=1
+        current['cs'] = cs_r
         
         result.append(current)
     return {'counts':{'solr':solr_results, 'cs':cs_results}, 'r':result}
@@ -110,15 +117,16 @@ def process_solr(question, concept, solr_response):
         else:
             return (response_invalid, result)
             
-    return [response_ne, {}]
+    return (response_ne, {})
     
-def process_cs(question, concept, solr_response):
+def process_cs(question, concept, expected, cs_response):
     '''
     Process the cs response
     '''
-
-    
-    return None
+    if expected.strip() in cs_response:
+        # Chat script has pick it
+        return response_valid
+    return response_invalid
 
 if __name__ == '__main__':
     app.run()

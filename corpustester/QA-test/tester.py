@@ -25,7 +25,7 @@ def read_corpus(corpus_file, log_info):
     log_info = (verbose, out_file)
     '''
     
-    f_csv = codecs.open(corpus_file, 'r', 'utf-8')
+    f_csv = open(corpus_file, 'r')
     
     reader = csv.reader(f_csv)
     data = []
@@ -37,7 +37,7 @@ def read_corpus(corpus_file, log_info):
         rcount+=1
         
     if log_info[0] >2:
-        print("Readed {lines} from the corpus {corpus}".format(lines=str(rcount), corpus=(args.corpus)), file=log_info[1])
+        print("Readed {lines} from the corpus {corpus}".format(lines=str(rcount), corpus=(corpus_file)), file=log_info[1])
     
     return data
 
