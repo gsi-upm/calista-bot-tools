@@ -109,9 +109,10 @@ def process_responses(corpus, cs_responses, solr_responses):
         result.append(current)
     
     # Get count percentages
-    
-    solr_results[response_per] = 100 * solr_results[response_valid] / len(solr_results)
-    cs_results[response_per] = 100 * cs_results[response_valid] / len(cs_results)
+    solr_results['total'] = solr_results[response_valid] + solr_results[response_invalid]
+    solr_results[response_per] = 100 * solr_results[response_valid] / solr_results['total']
+    cs_results['total'] = cs_results[response_valid] + cs_results[response_invalid]
+    cs_results[response_per] = 100 * cs_results[response_valid] / cs_results['total']
     
     return {'counts':{'solr':solr_results, 'cs':cs_results}, 'r':result}
 
@@ -144,7 +145,7 @@ def process_cs(question, concept, expected, cs_response):
     '''
     Process the cs response
     '''
-    if expected.strip() in cs_response:
+    if unidecode(expected.strip()) in unidecode(cs_response):
         # Chat script has pick it
         return response_valid
     return response_invalid
