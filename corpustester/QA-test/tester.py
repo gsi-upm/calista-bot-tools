@@ -9,6 +9,7 @@ import socket
 import requests
 
 from unidecode import unidecode
+import codecs
 
 import argparse
 
@@ -24,7 +25,7 @@ def read_corpus(corpus_file, log_info):
     log_info = (verbose, out_file)
     '''
     
-    f_csv = open(corpus_file, 'r')
+    f_csv = codecs.open(corpus_file, 'r', 'utf-8')
     
     reader = csv.reader(f_csv)
     data = []
@@ -71,7 +72,8 @@ def test_solr(question, url, log_info):
     # The values should probably be a config option
     
     payload= {'q':question, 'wt':'json', 'rows':'1',
-              'defType':'dismax', 'qf':'title^10.0 description^2.0'}
+              'defType':'dismax', 'qf':'title^10.0 description^2.0',
+              'fl':'*,score'}
     
     if log_info[0] >2:
         print("Sending {q} to solr".format(q=str(question)),file=log_info[1])
