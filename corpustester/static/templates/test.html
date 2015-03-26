@@ -47,9 +47,11 @@
                 <th>Question</th>
                 <th>Concept</th>
                 <th>Chatscript response</th>
+                <th>Chatscript valid?</th>
                 <th>Solr Concept</th>
                 <th>Solr Defintion</th>
                 <th>Solr Score</th>
+                <th>Solr Valid</th>
             </tr>
         </thead>
         <tbody>
@@ -57,10 +59,12 @@
             <tr>
                 <th>{{ response['question'] }}</th>
                 <th>{{ response['concept'] }}</th>
-                <th>{{ response['cs'] }}</th>
+                <th>{{ response['cs']['response'] }}</th>
+                <th>{{ response['cs']['valid'] }}</th>
                 <th>{{ response['solr']['title'] }}</th>
                 <th>{{ response['solr']['definition'] }}</th>
-                <th>{{ response['solr']['score'] }}
+                <th>{{ response['solr']['score'] }} </th>
+                <th>{{ response['solr']['valid'] }} </th>
             </tr>
             {% endfor %}
         </tbody>

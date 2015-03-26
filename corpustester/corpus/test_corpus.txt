@@ -31,8 +31,8 @@ que es una clase,clase,¬sendMaia content clase,solr
 ¿que es una clase?,clase,¬sendMaia content clase,solr
 ¿Qué es herencia?,herencia,¬sendMaia content herencia,solr
 Sabes qué es un objeto?,objeto,¬sendMaia content objeto,solr
-Qué es un boleano?,booleanos,¬sendMaia content boleano,solr
-Qué es un booleano?,booleanos,¬sendMaia content booleano,solr
+Qué es un boleano?,boolean,¬sendMaia content boleano,solr
+Qué es un booleano?,boolean,¬sendMaia content booleano,solr
 que es javadoc?,javadoc,¬sendMaia content javadoc,solr
 ¿Como hago una clase?,clases,¬sendMaia content clase,solr
 Tienes un ejemplo de dowhile?,dowhile,¬sendMaia example dowhile,solr

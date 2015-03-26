@@ -89,7 +89,7 @@ def process_responses(corpus, cs_responses, solr_responses):
         line = [unicode(elem, encoding="utf-8") for elem in corpus[i]]
         
         current = {'question':unicode(line[0]), 'concept':unicode(line[1])}
-        current['solr'] = {'title':'', 'score':'', 'definition':''}
+        current['solr'] = {'title':'', 'score':'', 'definition':'', 'valid':''}
 
         # Do we have a solr response?
         if len(solr_r)!= 0:
@@ -97,6 +97,7 @@ def process_responses(corpus, cs_responses, solr_responses):
             s_r = process_solr(line[0], line[1], solr_r)
             solr_results[s_r[0]] += 1
             current['solr'] = s_r[1]
+            current['solr']['valid'] = s_r[0]
         else:
             # Bad response from solr
             solr_results[response_invalid] +=1
@@ -104,7 +105,7 @@ def process_responses(corpus, cs_responses, solr_responses):
         # ChatScript
         cs_p = process_cs(line[0], line[1], line[2], cs_r)
         cs_results[cs_p]+=1
-        current['cs'] = cs_r
+        current['cs'] = {'response':cs_r, 'valid':cs_p}
         
         result.append(current)
     
@@ -133,7 +134,8 @@ def process_solr(question, concept, solr_response):
         result['definition'] = solr_response[0]['definition']
         result['score'] = solr_response[0]['score']
         
-        if concept in solr_concept:
+        # Ignore accented chars
+        if unidecode(concept) in unidecode(solr_concept):
             # Valid response
             return (response_valid, result)
         else:
