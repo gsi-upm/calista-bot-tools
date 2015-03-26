@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from __future__ import print_function
 import sys, os
-import codecs, unidecode
+import codecs
 
 from unidecode import unidecode
 
@@ -84,11 +84,11 @@ def process_responses(corpus, cs_responses, solr_responses):
     result = []
     
     for i in xrange(len(corpus)):
-        cs_r = unidecode(cs_responses[i])
+        cs_r = cs_responses[i]
         solr_r = solr_responses[i]
-        line = corpus[i]
+        line = [unicode(elem, encoding="utf-8") for elem in corpus[i]]
         
-        current = {'question':unidecode(line[0]), 'concept':unidecode(line[1])}
+        current = {'question':unicode(line[0]), 'concept':unicode(line[1])}
         current['solr'] = {'title':'', 'score':'', 'definition':''}
 
         # Do we have a solr response?
@@ -145,7 +145,7 @@ def process_cs(question, concept, expected, cs_response):
     '''
     Process the cs response
     '''
-    if unidecode(expected.strip()) in unidecode(cs_response):
+    if expected.strip() in cs_response:
         # Chat script has pick it
         return response_valid
     return response_invalid

@@ -59,7 +59,7 @@ def test_chatscript(question, agent, ip):
         response += data
         data = s.recv(1024) 
     
-    return response
+    return unicode(response, encoding="utf-8")
 
 def test_solr(question, url, log_info):
     '''
@@ -76,7 +76,7 @@ def test_solr(question, url, log_info):
               'fl':'*,score'}
     
     if log_info[0] >2:
-        print("Sending {q} to solr".format(q=str(question)),file=log_info[1])
+        print(u"Sending {q} to solr".format(q=str(question)),file=log_info[1])
     response = requests.get(url, params=payload).json()
     
     return response['response']['docs']
@@ -93,12 +93,12 @@ def process_response(cs_responses, solr_responses, corpus, args):
     for i in xrange(len(cs_responses)):
         cs_r = cs_responses[i]
         solr_r = solr_responses[i]
-        line = corpus[i]
+        line = unicode(corpus[i])
         
         if args.verbose >2:
-            print("-----------------------------------------------", file=args.output)
-            print("CSV Line: {line}".format(line=line), file=args.output)
-            print("Question: {q}".format(q=line[0]), file=args.output)
+            print(u"-----------------------------------------------", file=args.output)
+            print(u"CSV Line: {line}".format(line=line), file=args.output)
+            print(u"Question: {q}".format(q=line[0]), file=args.output)
         
         # Do we have a concept?
         if line[1] != '':
@@ -106,8 +106,8 @@ def process_response(cs_responses, solr_responses, corpus, args):
             
             # Solr should now about this
             if len(solr_r) != 0:
-                solr_concept = unidecode(solr_r[0]['title']).lower()
-                if unidecode(concept).strip() in solr_concept:
+                solr_concept = unicode(solr_r[0]['title']).lower()
+                if unicode(concept).strip() in solr_concept:
                     if args.verbose >2:
                         print(u"Valid Solr Concept: {solr_r}".format(solr_r=solr_concept), file=args.output)
                     solr_valid += 1
@@ -124,11 +124,11 @@ def process_response(cs_responses, solr_responses, corpus, args):
         # CS should respond either with the sentence, or sending info to maia
         if line[2] in cs_r:
             if args.verbose >2:
-               print(u"Valid CS Response: {cs_r}".format(cs_r=unidecode(cs_r)), file=args.output)
+               print(u"Valid CS Response: {cs_r}".format(cs_r=unicode(cs_r)), file=args.output)
             cs_valid +=1
         else:
             if args.verbose >2:
-                print("Invalid CS Response: {cs_r}".format(cs_r=cs_r), file=args.output)
+                print(u"Invalid CS Response: {cs_r}".format(cs_r=cs_r), file=args.output)
             cs_invalid +=1
             
         if args.verbose >2:
@@ -136,12 +136,12 @@ def process_response(cs_responses, solr_responses, corpus, args):
             
     cs_percent = 100 *cs_valid / (cs_valid+cs_invalid)
     solr_percent = 100 *solr_valid / (solr_valid+solr_invalid)
-    print("Total CS questions: {total}".format(total=str(cs_valid+cs_invalid)), file=args.output)
-    print("Valid CS responses: {valid} ({percentage} %)".format(valid=str(cs_valid),
+    print(u"Total CS questions: {total}".format(total=str(cs_valid+cs_invalid)), file=args.output)
+    print(u"Valid CS responses: {valid} ({percentage} %)".format(valid=str(cs_valid),
                                                                 percentage=str(cs_percent)),
                                                                 file=args.output)
-    print("Total SOLR questions: {total}".format(total=str(solr_valid+solr_invalid)), file=args.output)
-    print("Valid SOLR responses: {valid} ({percentage} %)".format(valid=str(solr_valid),
+    print(u"Total SOLR questions: {total}".format(total=str(solr_valid+solr_invalid)), file=args.output)
+    print(u"Valid SOLR responses: {valid} ({percentage} %)".format(valid=str(solr_valid),
                                                                   percentage=str(solr_percent)),
                                                                   file=args.output)
     
