@@ -147,7 +147,7 @@ def process_cs(question, concept, expected, cs_response):
     '''
     Process the cs response
     '''
-    if expected.strip() in cs_response:
+    if unidecode(expected).strip() in unidecode(cs_response):
         # Chat script has pick it
         return response_valid
     return response_invalid

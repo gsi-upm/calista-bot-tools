@@ -4,7 +4,7 @@ que es un while?,while,¬sendMaia content while,solr
 que es un while,while,¬sendMaia content while,solr
 eres el profesor,,"No, soy un bot asistente para ayudarte a encontrar respuestas.",chatscript
 que es un abstract,abstract,¬sendMaia content abstract,solr
-tienes un ejemplo de for?,for,¬sendMaia content for,solr
+tienes un ejemplo de for?,for,¬sendMaia example for,solr
 sabes lo que es un metodo?,metodo,¬sendMaia content metodo,solr
 me gustaría saber más sobre interfaces,interfaz,¬sendMaia content interfaces,solr
 sabes algo sobre iteracion?,iteracion,¬sendMaia content iteracion,solr
