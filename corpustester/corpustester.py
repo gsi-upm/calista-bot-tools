@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(root_folder, 'QA-test')))
 
 import tester
 
-from flask import Flask
+from flask import Flask, request
 import jinja2
 
 app = Flask(__name__)
@@ -31,8 +31,6 @@ response_per = 'per'
 #Jinja2 exporters
 jinja2_env = jinja2.Environment(loader=jinja2.PackageLoader('corpustester', 'static/templates'))
 jinja2_env.autoescape = True
-
-
 
 @app.route('/')
 def base():
@@ -68,6 +66,31 @@ def test_corpus():
     response_html = test_template.render(totals=results['counts'], results=results['r'])
     
     return response_html
+
+@app.route('/test/custom', methods=['GET'])
+def test_custom_get():
+    """
+    Returns the form to do a custom question to the bot
+    """
+    return open('{root}/static/templates/form.html'.format(root=root_folder), 'r').read()
+
+
+@app.route('/test/custom', methods=['POST'])
+def test_custom_post():
+    """
+    Receives a custom question 
+    """
+    question = request.form['question']
+    
+    cs_response = tester.test_chatscript(question, cs_agent, cs_ip)
+    solr_response = tester.test_solr(question, solr_url, (0, sys.stderr))
+    
+    bot_res = {'question':question, 'cs':cs_response, 'solr':solr_response[0]}
+
+    response_template = jinja2_env.get_template("response.html")
+    response_html = response_template.render(response=bot_res)
+    return response_html
+
 
 def process_responses(corpus, cs_responses, solr_responses):
     '''

@@ -7,8 +7,8 @@
     <title>Bot test</title>
 
     <!-- Bootstrap -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/custom.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/custom.css" rel="stylesheet">
    
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -19,8 +19,28 @@
   </head>
   <body>
     <h1> Calita bot Test interface </h1>
-    <a class="btn btn-default" href="test" role="button">Perform Test using the corpus</a>
-    <a clasS="btn btn-default" href="test/custom" role="button">Do custom test</a>
+    <h2>Response:</h2>
+    <table class="table table-striped">
+        <caption>Responses</caption>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Chatscript response</th>
+                <th>Solr Concept</th>
+                <th>Solr Defintion</th>
+                <th>Solr Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>{{ response['question'] }}</th>
+                <th>{{ response['cs'] }}</th>
+                <th>{{ response['solr']['title'] }}</th>
+                <th>{{ response['solr']['definition'] }}</th>
+                <th>{{ response['solr']['score'] }} </th>
+            </tr>
+        </tbody>
+    </table>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
