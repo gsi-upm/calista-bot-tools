@@ -170,7 +170,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Tester for the calista-bot back-end, using a provided corpus", add_help=True)
     parser.add_argument('-i', '--ip', default="127.0.0.1:1024", help="Host for the Chatscript server")
     parser.add_argument('-s', '--solr', default="http://localhost:8080/solr/elearning", help="Location of the Solr service")
-    parser.add_argument('-c', '--corpus', default="test_corpus.txt", help="CSV with the questions to test")
+    parser.add_argument('-c', '--corpus', default="test_corpus.csv", help="CSV with the questions to test")
     parser.add_argument('-a', '--agent', default="TestAgent", help="User to use with the bot")
     parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
     parser.add_argument('-p', '--permisive', action='store_true', help="Consider gambit responses as valid.")

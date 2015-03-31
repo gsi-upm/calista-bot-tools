@@ -22,7 +22,7 @@ A small explanations of the command line parameters:
   | Param | Default  | Explanation |
   |  ------- | ---------- | ------------- |
   | -u URL, --url URL | http://localhost:8090 | URL to connect with the talkbot controller |
-  | -c CORPUS, --corpus CORPUS | test_corpus.txt | CSV with the corpus |
+  | -c CORPUS, --corpus CORPUS | test_corpus.csv | CSV with the corpus |
   | -a AGENT, --agent AGENT | TestAgent | UserName to identify with the bot |
   | -v, --verbose | 0 | Verbosity level. -vvv equals a verbosity of 3 |
   | -s, --strict | 0 | Strict mode |
@@ -42,7 +42,7 @@ It can take several command line arguments:
   |  ------- | ---------- | ------------- |
   | -i IP, --ip IP | 127.0.0.1:1024 | Chatscript IP and Port |
   | -s SOLR, --solr SOLR | http://localhost:8080/solr/elearning | URL for the solr core |
-  | -c CORPUS, --corpus CORPUS | test_corpus.txt | CSV with the corpus |
+  | -c CORPUS, --corpus CORPUS | test_corpus.csv | CSV with the corpus |
   | -a AGENT, --agent AGENT | TestAgent | UserName to identify with the bot |
   | -v, --verbose | 0 | Verbosity level. -vvv equals a verbosity of 3 |
   | -p, --premisive | 0 | Permisive mode (As oppose to strict) |
