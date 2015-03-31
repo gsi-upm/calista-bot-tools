@@ -6,11 +6,59 @@ Small phython utility to test the [Calista Bot](https://github.com/gsi-upm/calis
              are familiar with what that means and are comfortable using that type
              of software.***
 
-Usage
+Corpus
 ---------------------------------------
 
-For the moment, there is only a small test for the FrontEnd controller, which can take the URL
-for the controller as a parameter, defaulting to loclahost:8090
+An example csv corpus can be found in the "corpus" folder.
+
+FE-test
+---------------------------------------
+
+Used to test the front-end controller (the "talkbot"), it can take several parameters, including
+a corpus in csv format, and the controller url. It can work in strict mode, only accepting appropiate
+responses as valid, or non-strict, accepting also gambits.
+A small explanations of the command line parameters:
+
+  | Param | Default  | Explanation |
+  |  ------- | ---------- | ------------- |
+  | -u URL, --url URL | http://localhost:8090 | URL to connect with the talkbot controller |
+  | -c CORPUS, --corpus CORPUS | test_corpus.txt | CSV with the corpus |
+  | -a AGENT, --agent AGENT | TestAgent | UserName to identify with the bot |
+  | -v, --verbose | 0 | Verbosity level. -vvv equals a verbosity of 3 |
+  | -s, --strict | 0 | Strict mode |
+  | -o OUTPUT, --output OUTPUT | stdout | Where to log the results |
+  | -h, --help | | Displays the help, and exits |
+
+
+QA-test
+---------------------------------------
+
+Using a csv corpus, tests both ChatScript and SolR, withouth using the front-end controller.
+It checks wether Chatscript recognizes the questions, returning and out-of-band command to retrieve
+them from SolR, and wether doing a search of the question in solr returns a valid result.
+It can take several command line arguments:
+
+  | Param | Default  | Explanation |
+  |  ------- | ---------- | ------------- |
+  | -i IP, --ip IP | 127.0.0.1:1024 | Chatscript IP and Port |
+  | -s SOLR, --solr SOLR | http://localhost:8080/solr/elearning | URL for the solr core |
+  | -c CORPUS, --corpus CORPUS | test_corpus.txt | CSV with the corpus |
+  | -a AGENT, --agent AGENT | TestAgent | UserName to identify with the bot |
+  | -v, --verbose | 0 | Verbosity level. -vvv equals a verbosity of 3 |
+  | -p, --premisive | 0 | Permisive mode (As oppose to strict) |
+  | -o OUTPUT, --output OUTPUT | stdout | Where to log the results |
+  | -h, --help | | Displays the help, and exits |
+
+
+WSGI
+---------------------------------------
+
+For the QA-test, and WSGI script is provided, for use with Apache and mod_wsgi.
+Keeping the directory structure, point the WSGIScriptAlias directive to the corpustester,
+and provide an Alias for the static files.
+
+The interface will allow to launch the test with the corpus, or input a custom question to be tested.
+
 
 License
 ---------------------------------------
