@@ -1,47 +1,47 @@
 Pregunta,Concepto,CS_RESPONSE,ANSWERER
 Hola,,"Hola, soy Duke y estoy aqui para ayudarte.",chatscript
-que es un while?,while,¬sendMaia content while,solr
-que es un while,while,¬sendMaia content while,solr
+que es un while?,while,¬sendMaia definition while,solr
+que es un while,while,¬sendMaia definition while,solr
 eres el profesor,,"No, soy un bot asistente para ayudarte a encontrar respuestas.",chatscript
-que es un abstract,abstract,¬sendMaia content abstract,solr
+que es un abstract,abstract,¬sendMaia definition abstract,solr
 tienes un ejemplo de for?,for,¬sendMaia example for,solr
-sabes lo que es un metodo?,metodo,¬sendMaia content metodo,solr
-me gustaría saber más sobre interfaces,interfaz,¬sendMaia content interfaces,solr
-sabes algo sobre iteracion?,iteracion,¬sendMaia content iteracion,solr
-que es iteracion?,iteracion,¬sendMaia content iteracion,solr
-Que es la iteración?,iteracion,¬sendMaia content iteracion,solr
-para qué sirve un else?,else,¬sendMaia content else,solr
-Qué es un bucle?,bucles,¬sendMaia content bucle,solr
-Como puedo usar un if?,if,¬sendMaia content if,solr
+sabes lo que es un metodo?,metodo,¬sendMaia definition metodo,solr
+me gustaría saber más sobre interfaces,interfaz,¬sendMaia definition interfaces,solr
+sabes algo sobre iteracion?,iteracion,¬sendMaia definition iteracion,solr
+que es iteracion?,iteracion,¬sendMaia definition iteracion,solr
+Que es la iteración?,iteracion,¬sendMaia definition iteracion,solr
+para qué sirve un else?,else,¬sendMaia definition else,solr
+Qué es un bucle?,bucles,¬sendMaia definition bucle,solr
+Como puedo usar un if?,if,¬sendMaia definition if,solr
 me gustaría ver un ejemplo de for?,for,¬sendMaia example for,solr
-que es un excepción?,excepcion,¬sendMaia content excepcion,solr
-Para que sirve un catch?,catch,¬sendMaia content catch,solr
+que es un excepción?,excepcion,¬sendMaia definition excepcion,solr
+Para que sirve un catch?,catch,¬sendMaia definition catch,solr
 tienes un ejemplo de try?,try,¬sendMaia example try,solr
-que es un int?,int,¬sendMaia content int,solr
-como represento un número?,numero,¬sendMaia content numero,solr
-que es un numero?,numero,¬sendMaia content numero,solr
-que es una string?,string,¬sendMaia content string,solr
-como repesento un entero?,int,¬sendMaia content entero,solr
-qué es un metodo?,metodo,¬sendMaia content metodo,solr
-sabes qué es un condicional?,condicional,¬sendMaia content condicional,solr
-Como hago un bucle?,bucles,¬sendMaia content bucle,solr
-qué es un dowhile?,dowhile,¬sendMaia content dowhile,solr
-Que es un metodo abstracto?,metodo,¬sendMaia content abstracto,solr
-que es una clase,clase,¬sendMaia content clase,solr
-¿que es una clase?,clase,¬sendMaia content clase,solr
-¿Qué es herencia?,herencia,¬sendMaia content herencia,solr
-Sabes qué es un objeto?,objeto,¬sendMaia content objeto,solr
-Qué es un boleano?,boolean,¬sendMaia content boleano,solr
-Qué es un booleano?,boolean,¬sendMaia content booleano,solr
-que es javadoc?,javadoc,¬sendMaia content javadoc,solr
-¿Como hago una clase?,clases,¬sendMaia content clase,solr
+que es un int?,int,¬sendMaia definition int,solr
+como represento un número?,numero,¬sendMaia definition numero,solr
+que es un numero?,numero,¬sendMaia definition numero,solr
+que es una string?,string,¬sendMaia definition string,solr
+como repesento un entero?,int,¬sendMaia definition entero,solr
+qué es un metodo?,metodo,¬sendMaia definition metodo,solr
+sabes qué es un condicional?,condicional,¬sendMaia definition condicional,solr
+Como hago un bucle?,bucles,¬sendMaia definition bucle,solr
+qué es un dowhile?,dowhile,¬sendMaia definition dowhile,solr
+Que es un metodo abstracto?,metodo,¬sendMaia definition abstracto,solr
+que es una clase,clase,¬sendMaia definition clase,solr
+¿que es una clase?,clase,¬sendMaia definition clase,solr
+¿Qué es herencia?,herencia,¬sendMaia definition herencia,solr
+Sabes qué es un objeto?,objeto,¬sendMaia definition objeto,solr
+Qué es un boleano?,boolean,¬sendMaia definition boleano,solr
+Qué es un booleano?,boolean,¬sendMaia definition booleano,solr
+que es javadoc?,javadoc,¬sendMaia definition javadoc,solr
+¿Como hago una clase?,clases,¬sendMaia definition clase,solr
 Tienes un ejemplo de dowhile?,dowhile,¬sendMaia example dowhile,solr
-No entiendo que es iteracion,iteracion,¬sendMaia content iteracion,solr
-Que es una excepcion?,excepcion,¬sendMaia content excepcion,solr
-Sabes lo que es un metodo privado?,metodo,¬sendMaia content privado,solr
-Que es iteración?,iteracion,¬sendMaia content iteracion,solr
-como hago una interfaz,interfaz,¬sendMaia content interfaz,solr
-Sabes que es una interfaz?,interfaz,¬sendMaia content interfaz,solr
-que es una variable,variable,¬sendMaia content variable,
+No entiendo que es iteracion,iteracion,¬sendMaia definition iteracion,solr
+Que es una excepcion?,excepcion,¬sendMaia definition excepcion,solr
+Sabes lo que es un metodo privado?,metodo,¬sendMaia definition privado,solr
+Que es iteración?,iteracion,¬sendMaia definition iteracion,solr
+como hago una interfaz,interfaz,¬sendMaia definition interfaz,solr
+Sabes que es una interfaz?,interfaz,¬sendMaia definition interfaz,solr
+que es una variable,variable,¬sendMaia definition variable,
 quien eres?,,Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.,chatscript
 Eres una persona?,,"No, soy un bot asistente para ayudarte a encontrar respuestas.",chatscript

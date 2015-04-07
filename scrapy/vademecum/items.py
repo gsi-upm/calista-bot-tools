@@ -15,7 +15,7 @@ class VademecumItem(scrapy.Item):
     title = scrapy.Field()
     alternative = scrapy.Field()
     concept = scrapy.Field()
-    url = scrapy.Field()
+    resource = scrapy.Field()
     
     # First sentence
     definition = scrapy.Field()

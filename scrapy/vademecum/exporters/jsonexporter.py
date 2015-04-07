@@ -26,7 +26,7 @@ class jsonExporter(scrapy.contrib.exporter.BaseItemExporter):
             Args:
                 item(Item):    The item scraped   
         '''
-        url = item.pop('url')
+        url = item.pop('resource')
         
         self.items[url] = {}
         for key, value in item.iteritems():

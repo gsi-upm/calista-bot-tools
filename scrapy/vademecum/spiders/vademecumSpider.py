@@ -23,7 +23,7 @@ class vademecumSpider(scrapy.Spider):
     def parse(self, response):
         
         doc = VademecumItem()
-        doc['url'] = response.url
+        doc['resource'] = response.url
         
         header = response.xpath('//p[@class="MsoHeader"]/ancestor::div/*[2]/descendant::*/*/text()').extract()
         header = ''.join(header).strip()

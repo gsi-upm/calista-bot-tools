@@ -74,7 +74,7 @@ def main(args):
         if args.verbose>2:
             print("Uploading {title}".format(title=doc['title']), file=args.output)
         doc = data[key]
-        doc['url'] = key
+        doc['resource'] = key
         upload_doc(doc, args)
     commit(args)
         
