@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Tester for the calista-bot front-end, using a provided corpus", add_help=True)
     parser.add_argument('-u', '--url', default="http://localhost:8090", help="URL of the talkbot controller")
-    parser.add_argument('-c', '--corpus', default="../corpus/test_corpus.txt", help="CSV with the questions to test")
+    parser.add_argument('-c', '--corpus', default="test_corpus.csv", help="CSV with the questions to test")
     parser.add_argument('-a', '--agent', default="TestAgent", help="User to use with the bot")
     parser.add_argument('-v', '--verbose', action='count', help="Print debug info")
     parser.add_argument('-s', '--strict', action='store_true', help="Consider non-gambit responses as valid.")

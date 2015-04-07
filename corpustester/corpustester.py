@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.debug = True
 
 # TODO: Config file
-corpus_file = "{root}/corpus/test_corpus.txt".format(root=root_folder)
+corpus_file = "{root}/corpus/test_corpus.csv".format(root=root_folder)
 cs_agent = "webtest"
 cs_ip = "127.0.0.1:1024"
 solr_url = "http://localhost:8080/solr/elearning"
