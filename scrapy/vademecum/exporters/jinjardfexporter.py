@@ -37,15 +37,16 @@ class JinjaRDFExporter(scrapy.contrib.exporter.BaseItemExporter):
         
         # If the "broader" concept is the vademcum itself, point to the
         # concept instead, if exists, or nothing if not.
-        if item['broader'] == "http://www.dit.upm.es/~pepe/libros/vademecum/topics/3.html":
-            # Replace the concept tag
-            if 'concept' in item:
-                if item['concept'] not in self.concepts:
-                    old_concept = item['concept']
+        #if item['broader'] == "http://www.dit.upm.es/~pepe/libros/vademecum/topics/3.html":
+        
+        # Replace the concept tag
+        if 'concept' in item:
+            if item['concept'] not in self.concepts:
+                old_concept = item['concept']
             
-                    # First, make all first letters capitalize, them remove spaces
-                    concept_id = ''.join(item['concept'].title().split())
-                    self.concepts[item['concept']] = concept_id
+                # First, make all first letters capitalize, them remove spaces
+                concept_id = ''.join(item['concept'].title().split())
+                self.concepts[item['concept']] = concept_id
         
 
         self.items.append(item)
@@ -56,7 +57,7 @@ class JinjaRDFExporter(scrapy.contrib.exporter.BaseItemExporter):
         its responsible of joining all the items in a single rdf file
         '''
         # Get namedIndividual template
-        named_individual = self.env.get_template("namedIndividual.rdf")
+        #named_individual = self.env.get_template("namedIndividual.rdf")
         # Get body template
         body = self.env.get_template("rdf_body.rdf")
         
