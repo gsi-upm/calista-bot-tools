@@ -45,7 +45,7 @@ def test_chatscript(question, agent, ip):
     '''
     Send the question to chatscript
     '''
-    query = agent + '\0' + 'Duke\0' + question +'\0'
+    query = agent + '\0' + 'Duke\0' + unidecode(question) +'\0'
     
     s = socket.socket()
     # Split host and port
