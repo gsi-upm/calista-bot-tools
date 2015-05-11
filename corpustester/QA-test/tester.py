@@ -41,24 +41,27 @@ def read_corpus(corpus_file, log_info):
     
     return data
 
-def test_chatscript(question, agent, ip):
+def test_chatscript(question, agent, ip, bot='Duke'):
     '''
     Send the question to chatscript
     '''
-    query = agent + '\0' + 'Duke\0' + unidecode(question) +'\0'
+    query = u'{}\0{}\0{}\0'.format(agent, bot, question)
     
     s = socket.socket()
     # Split host and port
     cs_tcp = ip.split(":")
     s.connect((cs_tcp[0],int(cs_tcp[1])))
-    s.send(query)
+    try:
+        s.send(query)
+    except UnicodeEncodeError:
+        s.send(query.encode('utf-8'))
+
     # Read response
     data = s.recv(1024)
     response = ""
     while data:
         response += data
         data = s.recv(1024) 
-    
     return unicode(response, encoding="utf-8")
 
 def test_solr(question, url, log_info):
