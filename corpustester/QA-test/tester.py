@@ -79,7 +79,11 @@ def test_solr(question, url, log_info):
         print(u"Sending {q} to solr".format(q=str(question)),file=log_info[1])
     response = requests.get(url, params=payload).json()
     
-    return response['response']['docs']
+    doc = response['response']['docs']
+    if len(doc) != 0:
+        return doc
+    else:
+        return []
     
 def process_response(cs_responses, solr_responses, corpus, args):
     '''
