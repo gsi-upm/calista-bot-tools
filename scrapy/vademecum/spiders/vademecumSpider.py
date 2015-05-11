@@ -52,14 +52,14 @@ class vademecumSpider(scrapy.Spider):
             else:
                 match = re.search("^(\d+)\.\s*(.+)\[(.+)\]$", header, flags=re.U)
                 if match:
-                    doc['title'] = match.group(1)
-                    doc['alternative'] = match.group(2)
+                    doc['title'] = match.group(2)
+                    doc['alternative'] = match.group(3)
                 else:
                     #corner case
                     match = re.search("(\d+)\.\s*(\S+)\s*\((\S+)\)", header, flags=re.U)
                     if match:
-                        doc['title'] = match.group(1)
-                        doc['concept'] = match.group(2)
+                        doc['title'] = match.group(2)
+                        doc['concept'] = match.group(3)
         elif "(" in header:
             # The first case
             match = re.search("(\d+)\.\s*(.+)\s\((.[^\)]+)\)", header, flags=re.U)
