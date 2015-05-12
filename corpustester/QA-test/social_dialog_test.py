@@ -34,7 +34,7 @@ class TestQAFeature(object):
         assert tcs('que es java')
 
     def test_que_es_java(self):
-        assert u'sendSolr definition java' in tcs('que es java')
+        assert u'sendSolr definition java' in tcs(u'que es java?')
 
     def test_que_es_for(self):
         assert u'sendSolr definition for' in tcs('que es for')
@@ -56,14 +56,146 @@ class TestQAFeature(object):
         #assert u'sendSolr definition for' in tcs('sabes algo acerca del for')
 
 
+class TestBugsFromLogs (object):
+
+    @pytest.fixture(scope="session", autouse=True)
+    def build_bot(self):
+        tcs(':build Dent reset')  
+        tcs('hola')
+
+    def test_que_es_un_set(self):
+        assert u'sendSolr definition set' in tcs(u'que es un set?')
+
+    def test_que_son_los_sets(self):
+        assert u'sendSolr definition sets' in tcs(u'que son los sets?')
+
+    def test_que_son_los_mapas(self):
+        assert u'sendSolr definition mapas' in tcs(u'que son los mapas?')
+
+    def test_que_es_un_mapa(self):
+        assert u'sendSolr definition mapa' in tcs(u'que es un mapa?')
+
+    def test_hola_ensename_que_es_un_while (self):
+        assert u'sendSolr definition while' in tcs(u'hola, enseñame que es un while')
+
+    def test_hola_que_es_un_metodo_estatico (self):
+        assert u'sendSolr definition estatico' in tcs(u'Hola, que es un metodo estatico?')
+
+    def test_ya_que_es_un_metodo_estatico (self):
+        assert u'sendSolr definition estatico' in tcs(u'ya... que es un metodo estatico?')
+
+    def test_gracias_por_todo(self):
+        assert tcs(u'gracias por todo') in [u'De nada', u'De nada, ha sido un placer']
+
+
+class TestRejoinders(object):
+
+    @pytest.fixture(scope="function", autouse=True)
+    def build_bot(self):
+        tcs(':build Dent reset')
+
+
+    def test_rejoinder_order_without_questioning(self):
+        assert tcs('unrecognised sentence') == u'¿Cómo estás?'
+        assert tcs('unrecognised sentence') == u'¿En qué puedo ayudarte?'
+        assert tcs('unrecognised sentence') == u'¿Sabías que me puedes preguntar por programación en Java?'
+        assert tcs('unrecognised sentence') == u'No controlo todos los temas, pero de algunos sé bastante'
+        assert tcs('unrecognised sentence') not in [u'¿Se te da bien la programación?', u'¿Te gusta Java?', u'¿Quieres responder a una encuesta? No te llevará ni 5 minutos']
+
+    def test_rejoinder_order_questioning_first(self):
+        tcs(u'Hola')
+        tcs(u'que es Java?')
+        assert tcs('cuantas preguntas') == u'Llevas 1 preguntas'
+        assert tcs('unrecognised sentence') == u'¿En qué puedo ayudarte?'
+        assert tcs('unrecognised sentence') == u'No controlo todos los temas, pero de algunos sé bastante'
+        assert tcs('unrecognised sentence') == u'¿Se te da bien la programación?'
+        assert tcs('unrecognised sentence') == u'¿Te gusta Java?'
+        assert tcs('unrecognised sentence') != u'¿Quieres responder a una encuesta? No te llevará ni 5 minutos'
+
+    def test_rejoinder_order_questioning_between(self):
+        assert tcs('unrecognised sentence') == u'¿Cómo estás?'
+        assert tcs('unrecognised sentence') == u'¿En qué puedo ayudarte?'        
+        assert tcs('unrecognised sentence') == u'¿Sabías que me puedes preguntar por programación en Java?'
+        assert tcs('unrecognised sentence') == u'No controlo todos los temas, pero de algunos sé bastante'
+        tcs(u'que es java?')
+        assert tcs('unrecognised sentence') == u'¿Se te da bien la programación?'
+        assert tcs('unrecognised sentence') == u'¿Te gusta Java?'
+        tcs(u'que es java?')
+        tcs(u'que es java?')
+        tcs(u'que es java?')
+        assert tcs('unrecognised sentence') == u'¿Quieres responder a una encuesta? No te llevará ni 5 minutos'
+
 class TestSocialDialog(object):
     
     @pytest.fixture(scope="session", autouse=True)
     def build_bot(self):
-        tcs(':build Dent')
+        tcs(':build Dent reset')
 
     def test_server_is_launched(self):
         assert tcs('hola')
+
+    def test_estoy_negativo(self):
+        questions = [u'estoy triste', u'porque no me gusta esto']
+        options = [[u'¿Por qué estás triste?', u'¿Cómo es que estás triste?'], [u'Entiendo', u'Comprendo']]
+        for _ in itertools.repeat(None, 10):
+            for index, question in enumerate(questions):
+                assert tcs(question, agent="estoynegativo") in options[index]
+        #iter 2
+        questions = [u'me encuentro cansado', u'me siento agotado', u'no sé']
+        options = [[u'¿Por qué estás cansado?', u'¿Cómo es que estás cansado?'], [u'¿Por qué estás agotado?', u'¿Cómo es que estás agotado?'], [u'Oh']]
+        for _ in itertools.repeat(None, 10):
+            for index, question in enumerate(questions):
+                assert tcs(question, agent="estoynegativo") in options[index]
+        #iter 3
+        questions = [u'me encuentro enfadada', u'me siento frustrada', u'no sé']
+        options = [[u'¿Por qué estás enfadada?', u'¿Cómo es que estás enfadada?'], [u'¿Por qué estás frustrada?', u'¿Cómo es que estás frustrada?'], [u'Oh']]
+        for _ in itertools.repeat(None, 10):
+            for index, question in enumerate(questions):
+                assert tcs(question, agent="estoynegativo") in options[index]
+
+    def test_estoy_mal(self):
+        questions = [u'estoy mal', u'no se']
+        options = [[u'Vaya ¿qué te pasa?', u'Vaya ¿qué te ocurre?'], [u'Lo siento', u'Si pudiera hacer algo...']]
+        for _ in itertools.repeat(None, 10):
+            for index, question in enumerate(questions):
+                assert tcs(question, agent="estoymal") in options[index]
+
+    def test_estoy_positivo_different_verbs(self):
+        questions = [u'Estoy contento', u'Me encuentro contento', u'Me siento contento']
+        options = [u'¡Estupendo!', u'Me alegro de que estés contento']
+        for question in questions:
+            assert tcs(question) in options
+            assert assert_list( repeat_until(question, options), options)
+
+    def test_estoy_positivo_different_feelings(self):
+        questions = [u'Estoy feliz']
+        options = [u'¡Estupendo!', u'Me alegro de que estés feliz']
+        for question in questions:
+            assert tcs(question) in options
+            assert assert_list( repeat_until(question, options), options)
+        questions = [u'Me encuentro alegre']
+        options = [u'¡Estupendo!', u'Me alegro de que estés alegre']
+        for question in questions:
+            assert tcs(question) in options
+            assert assert_list( repeat_until(question, options), options)     
+        questions = [u'Me siento contento']
+        options = [u'¡Estupendo!', u'Me alegro de que estés contento']
+        for question in questions:
+            assert tcs(question) in options
+            assert assert_list( repeat_until(question, options), options)     
+
+    def test_estoybien(self):
+        questions = [u'estoy bien', u'me encuentro bien', u'me siento bien']
+        options = [u'Me alegro', u'Estupendo']
+        for question in questions:
+            assert tcs(question) in options
+            assert assert_list( repeat_until(question, options), options)
+
+    def test_estoy_otherthing(self):
+        questions = [u'estoy cantando', u'pues estoy hablando contigo']
+        options = [u'¿Por qué estás cantando?', u'¿Por qué estás hablando contigo?']
+        for question in questions:
+            assert tcs(question) in options
 
     def test_hola(self):
         question = u'hola'
@@ -91,7 +223,7 @@ class TestSocialDialog(object):
 
     def test_quien_eres(self):
         question = u'quien eres'
-        options = [u"Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.", u"Duke, encantado de conocerte. Soy un bot especializado en java", u"Duke en mi nombre. Responder tus dudas yo debo"]
+        options = [u"Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.", u"Duke, encantado de conocerte. Soy un bot especializado en java", u"Duke es mi nombre. Responder tus dudas yo debo"]
         assert tcs(question) in options
         assert assert_list( repeat_until(question, options), options)
 
@@ -156,15 +288,27 @@ class TestSocialDialog(object):
         assert tcs(question) in options
 
     def test_que_es_un_bot(self):
-        assert tcs(u'que es un bot asistente') == u"Un bot asistente es como un diccionario parlante, te contesta preguntas si las sabe"
+        options = [u"Un bot asistente es como un diccionario parlante, te contesta preguntas si las sabe", u"Un bot asistente es un programa que simula a un humano teniendo una conversación. Además te contesta a preguntas si las sabe"]
+        assert tcs(u'que es un bot asistente') in options
         assert tcs(u'preguntas sobre que') == u"En mi caso sobre Java"
         assert tcs(u'solo eso') == u'Me gustaria aprender más'        
         # iter 2
-        assert tcs(u'que es un bot') == u'Un bot es como un diccionario parlante, te contesta preguntas si las sabe'
+        options = [u"Un bot es como un diccionario parlante, te contesta preguntas si las sabe", u"Un bot es un programa que simula a un humano teniendo una conversación. Además te contesta a preguntas si las sabe"]
+        assert tcs(u'que es un bot') in options
         assert tcs(u'que preguntas') == u"En mi caso sobre Java"
         # iter 2
-        assert tcs(u'que es un bot') == u'Un bot es como un diccionario parlante, te contesta preguntas si las sabe'
+        assert tcs(u'que es un bot') in options
         assert tcs(u'cualquier tipo de preguntas') == u"En mi caso sobre Java"
+
+    def test_bot(self):
+        options = [u"¿Preguntas lo que es? Un bot asistente es como un diccionario parlante, te contesta preguntas si las sabe", u"¿Preguntas lo que es? Un bot asistente es un programa que simula a un humano teniendo una conversación. Además te contesta a preguntas si las sabe"]
+        assert tcs(u'bot asistente') in options
+        assert tcs(u'preguntas sobre que') == u"En mi caso sobre Java"
+        assert tcs(u'solo eso') == u'Me gustaria aprender más'        
+        # iter 2
+        options = [u"¿Preguntas lo que es? Un chatbot es como un diccionario parlante, te contesta preguntas si las sabe", u"¿Preguntas lo que es? Un chatbot es un programa que simula a un humano teniendo una conversación. Además te contesta a preguntas si las sabe"]
+        assert tcs(u'chatbot') in options
+        assert tcs(u'que preguntas') == u"En mi caso sobre Java"
 
     def test_insulto_feo(self):
         questions = [u'feo', u'eres fea', u'tu interfaz es horrenda', u'quita bicho']
@@ -205,6 +349,7 @@ class TestSocialDialog(object):
         for _ in itertools.repeat(None, 10):
             for index, question in enumerate(questions):
                 assert tcs(question, agent="asd") in options[index]
+
 
     def n(self):
         questions = [u'']
