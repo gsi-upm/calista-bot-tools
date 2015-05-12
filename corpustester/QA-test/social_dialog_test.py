@@ -110,7 +110,7 @@ class TestIdeQuestions (object):
     # Que ser
     def test_que_es_netbeans (self):
         questions = [u'que es netbeans', u'que sabes de netbeans', u'explicame que es netbeans']
-        options = [u'No puedo hablarte de las características exactas de netbeans, pero puedes consultar esta comparativa',
+        options = [u'No sabría hablarte de las características exactas de netbeans, pero puedes consultar esta comparativa',
                    u'Es un IDE de Java, ¿no? En esta página salen más',
                    u'Para saber de netbeans, lo mejor será que mires esta comparativa de IDEs']
         for question in questions:
@@ -118,7 +118,7 @@ class TestIdeQuestions (object):
 
     def test_que_es_intellij (self):
         questions = [u'que es intellij', u'que sabes de intellij', u'explicame que es intellij']
-        options = [u'No puedo hablarte de las características exactas de intellij, pero puedes consultar esta comparativa',
+        options = [u'No sabría hablarte de las características exactas de intellij, pero puedes consultar esta comparativa',
                    u'Es un IDE de Java, ¿no? En esta página salen más',
                    u'Para saber de intellij, lo mejor será que mires esta comparativa de IDEs']
         for question in questions:
@@ -132,18 +132,18 @@ class TestIdeQuestions (object):
 
     # Como funciona
 
-    # def test_saber_usar_eclipse (self):
-    #     questions = [u'sabes utilizar eclipse', u'sabes trabajar con bluej', u'sabrias usar intellij']
-    #     for question in questions:
-    #         assert u'No sé utilizar ningún IDE en particular, a mi me gusta más la teoría' in tcs(question)
+    def test_saber_usar_eclipse (self):
+        questions = [u'sabes utilizar eclipse', u'sabes trabajar con bluej', u'sabrías usar intellij']
+        for question in questions:
+            assert u'No sé utilizar ningún IDE en particular, a mi me gusta más la teoría' in tcs(question)
 
-    # def test_como_funciona_eclipse (self):
-    #     questions = [u'como eclipse', u'como trabajar con bluej', u'como funciona intellij']
-    #     for question in questions:
-    #         res = tcs(question)
-    #         assert u'Para saber como funciona' in res
-    #         assert u'lo mejor es irse al manual' in res
-    #         assert u'¬resource http://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=manual%20' in res
+    def test_como_funciona_eclipse (self):
+        questions = [u'como funciona eclipse', u'como configuro bluej', u'como funciona intellij']
+        for question in questions:
+            res = tcs(question)
+            assert u'Para saber como funciona' in res
+            assert u'lo mejor es irse al manual' in res
+            assert u'¬resource http://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=manual%20' in res
 
     # Preferencias de uso
     def test_que_entorno_de_desarrollo_prefieres (self):
