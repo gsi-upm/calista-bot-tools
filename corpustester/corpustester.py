@@ -20,7 +20,7 @@ app.debug = True
 corpus_file = "{root}/corpus/test_corpus.csv".format(root=root_folder)
 cs_agent = "webtest"
 cs_ip = "127.0.0.1:1024"
-solr_url = "http://localhost:8080/solr/elearning"
+solr_url = "http://localhost:8983/solr"
 
 # Keys for the response dicts
 response_valid = 'valid'
@@ -137,6 +137,8 @@ def process_responses(corpus, cs_responses, solr_responses):
     solr_results[response_per] = 100 * solr_results[response_valid] / solr_results['total']
     cs_results['total'] = cs_results[response_valid] + cs_results[response_invalid]
     cs_results[response_per] = 100 * cs_results[response_valid] / cs_results['total']
+    
+    print(solr_results)
     
     return {'counts':{'solr':solr_results, 'cs':cs_results}, 'r':result}
 

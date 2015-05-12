@@ -9,10 +9,10 @@ TESTCONTROLLER=test_fe_controller.py
 TMPDIR=`mktemp -d`
 
 # Test without strict mode first
-./$TESTCONTROLLER -u $1 -o $TMPDIR/testNormal.log
+./$TESTCONTROLLER -u $1 -o $TMPDIR/testNormal.log -c ../corpus/test_corpus.csv -vvv
 
 # Test with strict mode
-./$TESTCONTROLLER -u $1 -s -o $TMPDIR/testStrict.log
+./$TESTCONTROLLER -u $1 -s -o $TMPDIR/testStrict.log -c ../corpus/test_corpus.csv -vvv
 
 # Give the results
 NORMAL=`tail -n 1 $TMPDIR/testNormal.log`
@@ -21,4 +21,4 @@ echo "Normal results: $NORMAL"
 echo "Strict results: $STRICT" 
 
 # Clear all
-rm -r $TMPDIR
+#rm -r $TMPDIR

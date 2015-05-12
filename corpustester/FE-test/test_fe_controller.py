@@ -130,9 +130,9 @@ def main(args):
             
         q_result = check_response(response, concept, args)
         if q_result[0]:
-            valid_responses.append((line[0],q_result[1]))
+            valid_responses.append((unidecode(line[0]),unidecode(q_result[1])))
         #else:
-            invalid_responses.append((line[0],q_result[1]))
+            invalid_responses.append((unidecode(line[0]),unidecode(q_result[1])))
     
     # Print wrong results with a lower verbosity level
     if args.verbose >2:
