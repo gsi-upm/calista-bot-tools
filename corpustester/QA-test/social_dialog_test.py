@@ -24,8 +24,20 @@ def repeat_until(question, options):
             return occurrences
     return occurrences
 
-def assert_list(L1, L2):
+def assert_list_exact(L1, L2):
     return len(L1) == len(L2) and sorted(L1) == sorted(L2)
+
+def assert_list_fuzzy(L1, L2):
+    if len(L1) != len(L2):
+        return False
+    sorted_l = sorted(L1)
+    for index, item in enumerate(sorted(L2)):
+        if item.lower() not in sorted_l[index].lower():
+            return False
+    return True
+
+def assert_list(L1, L2):
+    return assert_list_exact(L1, L2)
 
 
 class TestQAFeature(object):
@@ -86,6 +98,94 @@ class TestBugsFromLogs (object):
 
     def test_gracias_por_todo(self):
         assert tcs(u'gracias por todo') in [u'De nada', u'De nada, ha sido un placer']
+
+
+class TestIdeQuestions (object):
+
+    @pytest.fixture(scope="session", autouse=True)
+    def build_bot(self):
+        tcs(':build Dent reset')  
+        tcs('hola')
+
+    # Que ser
+    def test_que_es_netbeans (self):
+        questions = [u'que es netbeans', u'que sabes de netbeans', u'explicame que es netbeans']
+        options = [u'No puedo hablarte de las características exactas de netbeans, pero puedes consultar esta comparativa',
+                   u'Es un IDE de Java, ¿no? En esta página salen más',
+                   u'Para saber de netbeans, lo mejor será que mires esta comparativa de IDEs']
+        for question in questions:
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    def test_que_es_intellij (self):
+        questions = [u'que es intellij', u'que sabes de intellij', u'explicame que es intellij']
+        options = [u'No puedo hablarte de las características exactas de intellij, pero puedes consultar esta comparativa',
+                   u'Es un IDE de Java, ¿no? En esta página salen más',
+                   u'Para saber de intellij, lo mejor será que mires esta comparativa de IDEs']
+        for question in questions:
+            res = tcs(question)
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    def test_que_idelist_resource (self):
+        questions = [u'que es intellij', u'que es netbeans', u'que sabes de eclipse', u'que es NetBeans', u'que sabes de Eclipse', u'que es IntelliJ', u'que es Intellij']
+        for question in questions:
+            assert u'¬resource http://goo.gl/9gzJI7' in tcs(question)
+
+    # Como funciona
+
+    # def test_saber_usar_eclipse (self):
+    #     questions = [u'sabes utilizar eclipse', u'sabes trabajar con bluej', u'sabrias usar intellij']
+    #     for question in questions:
+    #         assert u'No sé utilizar ningún IDE en particular, a mi me gusta más la teoría' in tcs(question)
+
+    # def test_como_funciona_eclipse (self):
+    #     questions = [u'como eclipse', u'como trabajar con bluej', u'como funciona intellij']
+    #     for question in questions:
+    #         res = tcs(question)
+    #         assert u'Para saber como funciona' in res
+    #         assert u'lo mejor es irse al manual' in res
+    #         assert u'¬resource http://www.google.es/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=manual%20' in res
+
+    # Preferencias de uso
+    def test_que_entorno_de_desarrollo_prefieres (self):
+        questions = [u'que entorno de desarrollo prefieres', u'que entorno de desarrollo te parece mejor', u'que entorno de desarrollo es mejor']
+        options = [u'Mis programadores no tienen preferencias, así que te muestro una comparativa para que decidas tú mismo', u'Yo no utilizo ningún entorno de desarrollo en particular, pero échale un ojo a esto para comparar']
+        for question in questions:
+            res = tcs(question)
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    def test_que_IDE_prefieres (self):
+        questions = [u'que IDE prefieres', u'que IDE parece mejor', u'que IDE funciona mejor']
+        options = [u'Mis programadores no tienen preferencias, así que te muestro una comparativa para que decidas tú mismo', u'Yo no utilizo ningún IDE en particular, pero échale un ojo a esto para comparar']
+        for question in questions:
+            res = tcs(question)
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    def test_que_entorno_de_desarrollo_prefieres_resource (self):
+        questions = [u'que IDE prefieres', u'que herramienta de programación te parece mejor', u'que herramienta te parece mejor', u'que entorno para programar prefieres', u'que IDE debería usar', u'que entorno debo usar', u'en que herramienta prefieres para programar']
+        for question in questions:
+            assert u'¬resource http://goo.gl/9gzJI7' in tcs(question)
+
+    def test_que_entorno_de_desarrollo_utilizas (self):
+        questions = [u'que entorno de desarrollo utilizas', u'que entorno de desarrollo usas', u'en que entorno de desarrollo programas']
+        options = [u'No sé utilizar ningún IDE en particular, a mi me gusta más la teoría']
+        for question in questions:
+            res = tcs(question)
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    def test_que_IDE_utilizas (self):
+        questions = [u'que IDE utilizas', u'que IDE usas', u'en que IDE programas']
+        options = [u'No sé utilizar ningún IDE en particular, a mi me gusta más la teoría']
+        for question in questions:
+            res = tcs(question)
+            assert assert_list_fuzzy( repeat_until(question, options), options)
+
+    # Fallback
+    def test_te_suena_drjava(self):
+        questions = [u'te suena eclipse', u'te suena drjava', u'netbeans']
+        for question in questions:
+            res = tcs(question)
+            assert u'¿Te refieres al entorno de desarrollo? Lo mejor será que mires esta comparativa' in res
+            assert u'¬resource http://goo.gl/9gzJI7' in res
 
 
 class TestRejoinders(object):
