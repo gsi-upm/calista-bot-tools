@@ -99,6 +99,62 @@ class TestBugsFromLogs (object):
     def test_gracias_por_todo(self):
         assert tcs(u'gracias por todo') in [u'De nada', u'De nada, ha sido un placer']
 
+    def test_sabes_hablar(self):
+        assert u'No, por ahora sólo puedo escribir' in tcs(u'sabes hablar?')
+
+    def test_sabes_hablar_2iter(self):
+        options1= [u'No, por ahora sólo puedo escribir']
+        options2 = [u'Mi función es ayudarte a encontrar respuestas',
+                   u'Lo mío es buscar información sobre java y ayudarte con tus dudas',
+                   u'Un bot Duke es. ¡Cosas sobre java que explicarte tengo!',
+                   u'Busco información en mis documentos de Java',
+                   u'¡Cualquier cosa! ...nah, es broma, soy experto en Java']
+        assert tcs(u'sabes hablar?') in options1
+        assert tcs(u'sobre?') in options2
+        assert tcs(u'sabes hablar?') in options1
+        assert tcs(u'de que') in options2
+
+    # def test_sabes_hablar_questionmark(self):
+    #     assert u'No, por ahora sólo puedo escribir' in tcs(u'¿sabes hablar?')
+
+    def test_eres_capaz_de_hablar(self):
+        assert u'No, por ahora sólo puedo escribir' in tcs(u'eres capaz de hablar?')
+
+    def test_sabes_comunicarte(self):
+        assert tcs(u'sabes comunicarte?') in [u'Sí, ya sabes pregúntame sobre Java', u'Sí, ¿de qué quieres que hablemos?']
+
+    def test_sabes_comunicarte_2iter(self):
+        options1 = [u'Sí, ya sabes pregúntame sobre Java', u'Sí, ¿de qué quieres que hablemos?']
+        assert tcs(u'sabes comunicarte?') in options1
+        assert tcs(u'java') in u'¡Estupendo! Mi tema favorito'
+        assert tcs(u'sabes comunicarte?') in options1
+        assert tcs(u'de lo que quieras') in u'Bueno, yo preferiría hablar de Java que es lo que se me da bien'
+        assert tcs(u'sabes comunicarte?') in options1
+        assert tcs(u'de orange') in u'¿En serio? Conocía a una chicabot que sabía de esos temas, se llamaba Erika'
+        assert tcs(u'y yo') in u'Qué coincidencia'
+
+    def test_has_comido_hoy (self):
+        assert u'Yo no como, soy un bot' in tcs(u'has comido hoy?')
+
+    def test_vas_a_desayunar (self):
+        assert u'Yo no como, soy un bot' in tcs(u'vas a desayunar?')
+
+    def test_como_funcionan_los_comentarios (self):
+        assert u'No se como funciona los comentarios' in tcs(u'como funcionan los comentarios?')
+        assert u'Te puedo dar información teorica' in tcs(u'como funcionan los comentarios?')
+        assert u'label comentarios' in tcs(u'como funcionan los comentarios?')
+        assert u'sendSolr definition comentarios' in tcs(u'como funcionan los comentarios?')
+        
+    def test_como_funciona_el_while (self):
+        assert u'No se como funciona el while' in tcs(u'como funciona el bucle while?')
+        assert u'Te puedo dar información teorica' in tcs(u'como funciona el bucle while?')
+        assert u'label while' in tcs(u'como funciona el bucle while?')
+        assert u'sendSolr definition while' in tcs(u'como funciona el bucle while?')
+
+    def test_como_construir_un_condicional (self):
+        assert u'No se como funciona el while' in tcs(u'como construir el while?')
+        assert u'No se como funciona el while' in tcs(u'como se construye el while?')
+
 
 class TestIdeQuestions (object):
 
