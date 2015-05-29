@@ -379,12 +379,12 @@ class TestSocialDialog(object):
 
     def test_quien_eres(self):
         question = u'quien eres'
-        options = [u"Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.", u"Duke, encantado de conocerte. Soy un bot especializado en java", u"Duke es mi nombre. Responder tus dudas yo debo"]
+        options = [u"Yo soy Duke. ¿Tú como te llamas?", u"Me llamo Duke y soy un bot asistente para ayudarte con tus preguntas.", u"Duke, encantado de conocerte. Soy un bot especializado en java", u"Duke es mi nombre. Responder tus dudas yo debo"]
         assert tcs(question) in options
         assert assert_list( repeat_until(question, options), options)
 
     def test_sabes_hacer(self):
-        questions = [u'que sabes hacer', u'que pues hacer', u'muestrame que sabes hacer', u'dime que puesdes hacer']
+        questions = [u'que sabes hacer', u'que pues hacer', u'muestrame que sabes hacer', u'dime que puedes hacer']
         options = [u"Mi función es ayudarte a encontrar respuestas", u"Lo mío es buscar información sobre java y ayudarte con tus dudas", u"Un bot Duke es. ¡Cosas sobre java que explicarte tengo!", u"Busco información en mis documentos de Java", u'¡Cualquier cosa!...nah, es broma, soy experto en Java']
         for question in questions:
             assert tcs(question) in options
